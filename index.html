@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archbishop Ilsley - Interactive Learning Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2a5298 0%, #c41e3a 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .school-logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #c41e3a;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #2a5298;
+            margin-bottom: 5px;
+        }
+
+        .tagline {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .status-live {
+            background: #28a745;
+            color: white;
+            animation: pulse 2s infinite;
+        }
+
+        .status-demo {
+            background: #ffd93d;
+            color: #333;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 1.4rem;
+            color: #c41e3a;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .game-description {
+            color: #555;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .game-features {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .game-features li {
+            color: #666;
+            margin: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .game-features li::before {
+            content: "✓";
+            color: #28a745;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .demo-button {
+            background: linear-gradient(45deg, #c41e3a, #2a5298);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .demo-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(196, 30, 58, 0.3);
+        }
+
+        .footer {
+            background: rgba(255, 255, 255, 0.1);
+            text-align: center;
+            padding: 20px;
+            color: white;
+            margin-top: 40px;
+        }
+
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .close-popup {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .school-logo {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="school-logo">🏛️ ARCHBISHOP ILSLEY</div>
+        <div class="subtitle">Catholic School - Interactive Learning Hub</div>
+        <div class="tagline">Discover English & Media Studies Through Interactive Games</div>
+    </div>
+
+    <div class="container">
+        <div class="games-grid">
+            <!-- AI Story Generator -->
+            <div class="game-card" onclick="openDemo('story')">
+                <div class="status-badge status-live">LIVE</div>
+                <div class="game-icon">📚</div>
+                <h3 class="game-title">AI Story Generator</h3>
+                <p class="game-description">Create unique stories with AI assistance! Choose your mood, setting, and watch your creativity come alive.</p>
+                <ul class="game-features">
+                    <li>Multiple story genres and moods</li>
+                    <li>Interactive character building</li>
+                    <li>Instant creative inspiration</li>
+                    <li>Perfect for creative writing</li>
+                </ul>
+                <button class="demo-button">Start Creating</button>
+            </div>
+
+            <!-- Fake News Detective -->
+            <div class="game-card" onclick="openDemo('fakenews')">
+                <div class="status-badge status-demo">PLAY NOW</div>
+                <div class="game-icon">🕵️</div>
+                <h3 class="game-title">Fake News Detective</h3>
+                <p class="game-description">Learn to spot fake news and unreliable sources. Develop critical thinking skills for the digital age.</p>
+                <ul class="game-features">
+                    <li>Real vs fake article challenges</li>
+                    <li>Source credibility checker</li>
+                    <li>Critical thinking skills</li>
+                    <li>Media literacy education</li>
+                </ul>
+                <button class="demo-button">Start Detective Work</button>
+            </div>
+
+            <!-- Shakespeare Word Challenge -->
+            <div class="game-card" onclick="openDemo('shakespeare')">
+                <div class="status-badge status-demo">PLAY NOW</div>
+                <div class="game-icon">📜</div>
+                <h3 class="game-title">Shakespeare Word Challenge</h3>
+                <p class="game-description">Test your knowledge of Shakespearean vocabulary! Guess the meanings of authentic words from the Bard's plays.</p>
+                <ul class="game-features">
+                    <li>Authentic Shakespeare vocabulary</li>
+                    <li>Multiple choice meanings</li>
+                    <li>Learn while you play</li>
+                    <li>Progressive difficulty levels</li>
+                </ul>
+                <button class="demo-button">Start Challenge</button>
+            </div>
+
+            <!-- Christmas Carol Journey -->
+            <div class="game-card" onclick="openDemo('scrooge')">
+                <div class="status-badge status-demo">PLAY NOW</div>
+                <div class="game-icon">🎄</div>
+                <h3 class="game-title">Scrooge's Redemption Journey</h3>
+                <p class="game-description">Interactive story exploring Scrooge's transformation through Dickens' classic Christmas Carol.</p>
+                <ul class="game-features">
+                    <li>Interactive story with choices</li>
+                    <li>Visual transformation meter</li>
+                    <li>Explores themes of redemption</li>
+                    <li>Perfect for Victorian literature</li>
+                </ul>
+                <button class="demo-button">Begin Journey</button>
+            </div>
+
+            <!-- Animal Farm Propaganda Detective -->
+            <div class="game-card" onclick="openDemo('animalfarm')">
+                <div class="status-badge status-demo">PLAY NOW</div>
+                <div class="game-icon">🐷</div>
+                <h3 class="game-title">Animal Farm Propaganda Detective</h3>
+                <p class="game-description">Spot propaganda techniques in Orwell's Animal Farm. Learn about persuasion and political manipulation.</p>
+                <ul class="game-features">
+                    <li>Identify propaganda techniques</li>
+                    <li>Historical allegory connections</li>
+                    <li>Critical thinking development</li>
+                    <li>Modern relevance discussions</li>
+                </ul>
+                <button class="demo-button">Investigate Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>Archbishop Ilsley Catholic School - English & Media Studies Department</p>
+        <p>Inspiring Excellence Through Interactive Learning</p>
+    </div>
+
+    <!-- Popup Overlay -->
+    <div id="popupOverlay" class="popup-overlay">
+        <div class="popup-content">
+            <h3 id="popupTitle">Game Demo</h3>
+            <p id="popupMessage">This game is coming soon!</p>
+            <button class="close-popup" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const gameUrls = {
+            story: './story-generator/',
+            fakenews: './fake-news-detective/',
+            shakespeare: './shakespeare-challenge/',
+            scrooge: './christmas-carol/',
+            animalfarm: './animal-farm/'
+        };
+
+        const gameInfo = {
+            story: {
+                title: '📚 AI Story Generator',
+                text: 'This tool is LIVE! Students can create unique stories by selecting moods, genres, and character types. Perfect for inspiring creative writing!'
+            },
+            fakenews: {
+                title: '🕵️ Fake News Detective',
+                text: 'Coming soon! Students test their ability to spot fake headlines and learn about source credibility and media literacy.'
+            },
+            shakespeare: {
+                title: '📜 Shakespeare Word Challenge',
+                text: 'Coming soon! Test your knowledge of Shakespearean vocabulary by guessing the meanings of authentic words from the Bard\'s plays.'
+            },
+            scrooge: {
+                title: '🎄 Scrooge\'s Redemption Journey',
+                text: 'Coming soon! Interactive story following Scrooge\'s transformation with choice-driven narrative and character development tracking.'
+            },
+            animalfarm: {
+                title: '🐷 Animal Farm Propaganda Detective',
+                text: 'Coming soon! Identify propaganda techniques, track the Seven Commandments changes, and explore Orwell\'s political allegory.'
+            }
+        };
+
+        function openDemo(gameType) {
+            // Check if game exists and is ready
+            if (gameUrls[gameType] && gameType === 'story') {
+                // Open live games in new tab
+                window.open(gameUrls[gameType], '_blank');
+            } else if (gameUrls[gameType]) {
+                // For games that exist but aren't ready yet, could either:
+                // 1. Open the game page, or 2. Show coming soon popup
+                // For now, let's show popup until games are built
+                const info = gameInfo[gameType];
+                document.getElementById('popupTitle').textContent = info.title;
+                document.getElementById('popupMessage').textContent = info.text;
+                document.getElementById('popupOverlay').style.display = 'flex';
+            } else {
+                // Fallback for any missing games
+                document.getElementById('popupTitle').textContent = 'Game Coming Soon';
+                document.getElementById('popupMessage').textContent = 'This game is still in development!';
+                document.getElementById('popupOverlay').style.display = 'flex';
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
+
+        // Close popup when clicking outside
+        document.getElementById('popupOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closePopup();
+            }
+        });
+
+        // Add some sparkle animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.game-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.6s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 150);
+            });
+        });
+    </script>
+</body>
+</html>
