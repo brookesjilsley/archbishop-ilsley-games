@@ -1,1 +1,603 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrooge's Redemption Journey - Archbishop Ilsley Catholic School</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2a5298 0%, #333 50%, #c41e3a 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .game-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .school-logo {
+            color: #c41e3a;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            color: #2a5298;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .subtitle {
+            color: #333;
+            font-size: 1.1em;
+            font-style: italic;
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .transformation-meter {
+            background: #f0f0f0;
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 15px 0;
+            border: 3px solid #2a5298;
+        }
+
+        .transformation-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #c41e3a, #ffd700, #2a5298);
+            width: 0%;
+            transition: width 1s ease-in-out;
+            border-radius: 12px;
+        }
+
+        .scrooge-avatar {
+            text-align: center;
+            font-size: 4em;
+            margin: 15px 0;
+            transition: all 0.5s ease;
+        }
+
+        .game-screen {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            flex-grow: 1;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .game-screen.active {
+            display: block;
+        }
+
+        .scene-image {
+            width: 100%;
+            max-width: 400px;
+            height: 250px;
+            background: linear-gradient(135deg, #2a5298, #c41e3a);
+            border-radius: 15px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5em;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .story-text {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            color: #333;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #ffd700;
+        }
+
+        .choices-container {
+            display: grid;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .choice-btn {
+            background: linear-gradient(135deg, #2a5298, #c41e3a);
+            color: white;
+            border: none;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .choice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+
+        .choice-btn.good {
+            background: linear-gradient(135deg, #2a5298, #28a745);
+            color: white !important;
+        }
+
+        .choice-btn.neutral {
+            background: linear-gradient(135deg, #333, #666);
+        }
+
+        .choice-btn.bad {
+            background: linear-gradient(135deg, #c41e3a, #8b0000);
+        }
+
+        .start-screen {
+            text-align: center;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #ffd700, #2a5298);
+            color: white !important;
+            border: none;
+            padding: 20px 40px;
+            border-radius: 15px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .educational-note {
+            background: #e8f4f8;
+            border: 2px solid #2a5298;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #2a5298;
+        }
+
+        .theme-box {
+            background: #fff3cd;
+            border: 2px solid #ffd700;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .theme-title {
+            color: #c41e3a;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .ghost-indicator {
+            display: inline-block;
+            padding: 8px 15px;
+            background: #2a5298;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.1em;
+            margin: 15px 0;
+        }
+
+        .final-screen {
+            text-align: center;
+        }
+
+        .final-message {
+            font-size: 1.3em;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .excellent {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .good {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffc107;
+            color: #856404;
+        }
+
+        .needs-work {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 10px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .scene-image {
+                height: 200px;
+                font-size: 4em;
+            }
+            
+            .story-text {
+                font-size: 1.1em;
+                padding: 15px;
+            }
+            
+            .choice-btn {
+                padding: 15px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">
+            <div class="school-logo">🏫 Archbishop Ilsley Catholic School</div>
+            <h1>🎄 Scrooge's Redemption Journey</h1>
+            <div class="subtitle">An Interactive Christmas Carol Adventure</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="score-display">
+                <strong>Redemption Progress:</strong> <span id="score">0</span>/100
+            </div>
+            <div class="transformation-meter">
+                <div class="transformation-fill" id="progressBar"></div>
+            </div>
+            <div class="scrooge-avatar" id="scroogeAvatar">😠</div>
+        </div>
+
+        <!-- Start Screen -->
+        <div class="game-screen active" id="startScreen">
+            <div class="start-screen">
+                <div class="scene-image">🏠</div>
+                <div class="story-text">
+                    Welcome to Victorian London, where you'll experience Ebenezer Scrooge's incredible journey of transformation. Through your choices, you'll learn about redemption, compassion, and the true spirit of Christmas.
+                </div>
+                
+                <div class="educational-note">
+                    <strong>How to Play:</strong><br>
+                    • Read each scene from Dickens' famous story<br>
+                    • Choose how Scrooge should respond at key moments<br>
+                    • Watch your Redemption Progress bar fill up based on your choices<br>
+                    • See Scrooge transform from 😠 to 🎅 as you make kinder decisions<br>
+                    • Discover different endings depending on your choices!
+                </div>
+
+                <div class="educational-note">
+                    <strong>Educational Focus:</strong> Character development, Victorian social issues, themes of redemption and social responsibility in Dickens' masterpiece.
+                </div>
+                <button class="start-btn" onclick="startGame()">Begin Your Journey</button>
+                <button class="restart-btn" onclick="restartGame()" style="margin-top: 10px;">Restart Game</button>
+            </div>
+        </div>
+
+        <!-- Game Screens -->
+        <div class="game-screen" id="screen1">
+            <div class="ghost-indicator">👻 Before the Spirits</div>
+            <div class="scene-image">💰</div>
+            <div class="story-text">
+                Christmas Eve in your counting house. Bob Cratchit shivers in the cold while you count coins. Your nephew Fred arrives, cheerfully wishing you "Merry Christmas!" and inviting you to dinner. Two gentlemen also enter, asking for charity donations for the poor.
+            </div>
+            <div class="theme-box">
+                <div class="theme-title">Key Theme: Social Responsibility</div>
+                How does Scrooge initially respond to requests for kindness and charity?
+            </div>
+            <div class="choices-container">
+                <button class="choice-btn bad" onclick="makeChoice(1, 0)">
+                    "Bah! Humbug! Keep your Christmas to yourself!" Refuse all requests coldly.
+                </button>
+                <button class="choice-btn neutral" onclick="makeChoice(1, 10)">
+                    Give Fred a half-hearted response but remain generally dismissive.
+                </button>
+                <button class="choice-btn good" onclick="makeChoice(1, 25)">
+                    Show some curiosity about Fred's invitation, though still reluctant.
+                </button>
+            </div>
+        </div>
+
+        <div class="game-screen" id="screen2">
+            <div class="ghost-indicator">👻 Ghost of Christmas Past</div>
+            <div class="scene-image">🕰️</div>
+            <div class="story-text">
+                The Ghost of Christmas Past shows you scenes from your youth - your lonely school days, your joyful apprenticeship with old Fezziwig, and the painful moment Belle left you because money became more important than love.
+            </div>
+            <div class="theme-box">
+                <div class="theme-title">Key Theme: Lost Innocence & Choices</div>
+                How does seeing your past affect you?
+            </div>
+            <div class="choices-container">
+                <button class="choice-btn bad" onclick="makeChoice(2, 0)">
+                    "These are shadows of the past! They have no power over me now!"
+                </button>
+                <button class="choice-btn neutral" onclick="makeChoice(2, 15)">
+                    Feel uncomfortable but try to dismiss the emotions these memories bring.
+                </button>
+                <button class="choice-btn good" onclick="makeChoice(2, 30)">
+                    Feel genuine sorrow for the choices you made and the happiness you lost.
+                </button>
+            </div>
+        </div>
+
+        <div class="game-screen" id="screen3">
+            <div class="ghost-indicator">👻 Ghost of Christmas Present</div>
+            <div class="scene-image">🍗</div>
+            <div class="story-text">
+                The jolly Ghost of Christmas Present shows you Bob Cratchit's humble but loving Christmas dinner. Despite their poverty, the Cratchit family is full of joy and gratitude. You see Tiny Tim's brave spirit despite his illness, and learn he may not survive another year.
+            </div>
+            <div class="theme-box">
+                <div class="theme-title">Key Theme: Compassion & Family</div>
+                How do you respond to seeing the Cratchit family's struggles?
+            </div>
+            <div class="choices-container">
+                <button class="choice-btn bad" onclick="makeChoice(3, 5)">
+                    "If they can't afford to live properly, perhaps they should reduce their surplus population."
+                </button>
+                <button class="choice-btn neutral" onclick="makeChoice(3, 20)">
+                    Feel slightly troubled but still maintain your distance emotionally.
+                </button>
+                <button class="choice-btn good" onclick="makeChoice(3, 35)">
+                    Feel deep remorse for your treatment of Bob and genuine concern for Tiny Tim.
+                </button>
+            </div>
+        </div>
+
+        <div class="game-screen" id="screen4">
+            <div class="ghost-indicator">👻 Ghost of Christmas Yet to Come</div>
+            <div class="scene-image">⚰️</div>
+            <div class="story-text">
+                The silent, terrifying Ghost of Christmas Yet to Come shows you a future where you die alone and unmourned. People steal from your corpse, business associates speak carelessly of your death, and you see Tiny Tim's empty chair - he didn't survive.
+            </div>
+            <div class="theme-box">
+                <div class="theme-title">Key Theme: Consequences & Mortality</div>
+                Faced with this terrible future, how do you respond?
+            </div>
+            <div class="choices-container">
+                <button class="choice-btn bad" onclick="makeChoice(4, 0)">
+                    "These are merely shadows of what may be, not what must be!"
+                </button>
+                <button class="choice-btn neutral" onclick="makeChoice(4, 15)">
+                    Feel fear but struggle to fully accept responsibility for this future.
+                </button>
+                <button class="choice-btn good" onclick="makeChoice(4, 40)">
+                    "Spirit, I will honor Christmas in my heart and try to keep it all the year!"
+                </button>
+            </div>
+        </div>
+
+        <div class="game-screen" id="screen5">
+            <div class="ghost-indicator">🌅 Christmas Morning</div>
+            <div class="scene-image">🎄</div>
+            <div class="story-text">
+                You wake on Christmas morning, grateful to be alive and given a second chance! A boy tells you it's still Christmas Day - the spirits did their work in one night. You have the opportunity to make amends and change your ways.
+            </div>
+            <div class="theme-box">
+                <div class="theme-title">Key Theme: Redemption & Action</div>
+                How do you use this second chance?
+            </div>
+            <div class="choices-container">
+                <button class="choice-btn bad" onclick="makeChoice(5, 5)">
+                    Make minimal changes but generally return to your old ways.
+                </button>
+                <button class="choice-btn neutral" onclick="makeChoice(5, 20)">
+                    Make some improvements but struggle to fully transform.
+                </button>
+                <button class="choice-btn good" onclick="makeChoice(5, 30)">
+                    Embrace complete transformation - send the Cratchits a turkey, raise Bob's salary, donate to charity, and accept Fred's invitation!
+                </button>
+            </div>
+        </div>
+
+        <!-- Final Screen -->
+        <div class="game-screen" id="finalScreen">
+            <div class="final-screen">
+                <div class="scene-image" id="finalEmoji">🎄</div>
+                <div class="final-message" id="finalMessage"></div>
+                <div class="educational-note">
+                    <strong>What you've learned:</strong> Through your choices, you've explored Dickens' themes of social responsibility, the power of redemption, and how personal transformation can impact entire communities. A Christmas Carol remains relevant today as it shows how individual change can create positive social impact.
+                </div>
+                <button class="restart-btn" onclick="restartGame()">Play Again</button>
+                <button class="restart-btn" onclick="showSummary()">Learning Summary</button>
+            </div>
+        </div>
+
+        <!-- Summary Screen -->
+        <div class="game-screen" id="summaryScreen">
+            <h2 style="color: #c41e3a; text-align: center; margin-bottom: 20px;">📚 A Christmas Carol - Key Themes</h2>
+            
+            <div class="theme-box">
+                <div class="theme-title">🔄 Redemption</div>
+                Dickens shows that people can change, no matter how set in their ways. Scrooge's transformation demonstrates the power of self-reflection and choice.
+            </div>
+
+            <div class="theme-box">
+                <div class="theme-title">🤝 Social Responsibility</div>
+                The story criticizes Victorian society's treatment of the poor and emphasizes our duty to care for one another, especially the vulnerable.
+            </div>
+
+            <div class="theme-box">
+                <div class="theme-title">👨‍👩‍👧‍👦 Family and Community</div>
+                The Cratchit family's love despite poverty contrasts with Scrooge's lonely wealth, showing that relationships matter more than money.
+            </div>
+
+            <div class="theme-box">
+                <div class="theme-title">⏰ Time and Memory</div>
+                The three spirits representing past, present, and future show how our choices connect across time and impact our destiny.
+            </div>
+
+            <div class="educational-note">
+                <strong>Why study Dickens today?</strong> His themes of social justice, personal responsibility, and the power of compassion remain deeply relevant in our modern world.
+            </div>
+
+            <button class="restart-btn" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        let currentScreen = 0;
+        let score = 0;
+        const maxScore = 120;
+
+        const scroogeEmojis = ['😠', '😐', '🙂', '😊', '🎅'];
+        const screens = ['startScreen', 'screen1', 'screen2', 'screen3', 'screen4', 'screen5', 'finalScreen'];
+
+        function updateProgress() {
+            const percentage = Math.min((score / maxScore) * 100, 100);
+            document.getElementById('progressBar').style.width = percentage + '%';
+            document.getElementById('score').textContent = score;
+            
+            // Update Scrooge avatar based on progress
+            let emojiIndex = Math.floor(percentage / 25);
+            if (emojiIndex >= scroogeEmojis.length) emojiIndex = scroogeEmojis.length - 1;
+            document.getElementById('scroogeAvatar').textContent = scroogeEmojis[emojiIndex];
+        }
+
+        function startGame() {
+            currentScreen = 1;
+            score = 0;
+            updateProgress();
+            showScreen('screen1');
+        }
+
+        function showScreen(screenId) {
+            // Hide all screens
+            document.querySelectorAll('.game-screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // Show target screen
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function makeChoice(screenNumber, points) {
+            score += points;
+            updateProgress();
+            
+            // Add a small delay for visual feedback
+            setTimeout(() => {
+                if (screenNumber < 5) {
+                    currentScreen = screenNumber + 1;
+                    showScreen('screen' + currentScreen);
+                } else {
+                    showFinalScreen();
+                }
+            }, 1000);
+        }
+
+        function showFinalScreen() {
+            showScreen('finalScreen');
+            
+            const finalMessage = document.getElementById('finalMessage');
+            const finalEmoji = document.getElementById('finalEmoji');
+            
+            if (score >= 100) {
+                finalMessage.className = 'final-message excellent';
+                finalMessage.innerHTML = `
+                    <h2>🎄 Complete Redemption! 🎄</h2>
+                    <p>Score: ${score}/${maxScore}</p>
+                    <p>Like Dickens' Scrooge, you've chosen the path of complete transformation! You understand that true change comes from recognising past mistakes, feeling genuine empathy for others, and taking concrete action to help those in need. Your choices show you've grasped the novel's central message about the power of redemption and social responsibility.</p>
+                `;
+                finalEmoji.textContent = '🎅';
+            } else if (score >= 60) {
+                finalMessage.className = 'final-message good';
+                finalMessage.innerHTML = `
+                    <h2>📈 Good Progress!</h2>
+                    <p>Score: ${score}/${maxScore}</p>
+                    <p>You've made meaningful steps toward redemption, showing you understand many of Dickens' key themes. While not achieving complete transformation like Scrooge, you've demonstrated growth in empathy and social awareness. Consider how even small acts of kindness can have profound impacts on others.</p>
+                `;
+                finalEmoji.textContent = '🙂';
+            } else {
+                finalMessage.className = 'final-message needs-work';
+                finalMessage.innerHTML = `
+                    <h2>🤔 Room for Growth</h2>
+                    <p>Score: ${score}/${maxScore}</p>
+                    <p>Your journey shows there's still much to learn about compassion and redemption. Dickens wrote A Christmas Carol to show that even the hardest hearts can change. Consider how Scrooge's transformation came from truly seeing the impact of his choices on others. Try again and explore the power of empathy!</p>
+                `;
+                finalEmoji.textContent = '😐';
+            }
+        }
+
+        function restartGame() {
+            currentScreen = 0;
+            score = 0;
+            updateProgress();
+            showScreen('startScreen');
+        }
+
+        function showSummary() {
+            showScreen('summaryScreen');
+        }
+
+        // Initialize the game
+        updateProgress();
+    </script>
+</body>
+</html>
