@@ -317,39 +317,12 @@
             animalfarm: './animal-farm/'
         };
 
-        const gameInfo = {
-            story: {
-                title: '📚 AI Story Generator',
-                text: 'This tool is LIVE! Students can create unique stories by selecting moods, genres, and character types. Perfect for inspiring creative writing!'
-            },
-            fakenews: {
-                title: '🕵️ Fake News Detective',
-                text: 'Coming soon! Students test their ability to spot fake headlines and learn about source credibility and media literacy.'
-            },
-            shakespeare: {
-                title: '📜 Shakespeare Word Challenge',
-                text: 'Coming soon! Test your knowledge of Shakespearean vocabulary by guessing the meanings of authentic words from the Bard\'s plays.'
-            },
-            scrooge: {
-                title: '🎄 Scrooge\'s Redemption Journey',
-                text: 'Coming soon! Interactive story following Scrooge\'s transformation with choice-driven narrative and character development tracking.'
-            },
-            animalfarm: {
-                title: '🐷 Animal Farm Propaganda Detective',
-                text: 'Coming soon! Identify propaganda techniques, track the Seven Commandments changes, and explore Orwell\'s political allegory.'
-            }
-        };
+
 
         function openDemo(gameType) {
-            // Check if game exists
+            // Always try to open the game directly
             if (gameUrls[gameType]) {
-                // Open game in new tab
                 window.open(gameUrls[gameType], '_blank');
-            } else {
-                // Fallback for any missing games
-                document.getElementById('popupTitle').textContent = 'Game Coming Soon';
-                document.getElementById('popupMessage').textContent = 'This game is still in development!';
-                document.getElementById('popupOverlay').style.display = 'flex';
             }
         }
 
