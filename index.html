@@ -341,18 +341,10 @@
         };
 
         function openDemo(gameType) {
-            // Check if game exists and is ready
-            if (gameUrls[gameType] && gameType === 'story') {
-                // Open live games in new tab
+            // Check if game exists
+            if (gameUrls[gameType]) {
+                // Open game in new tab
                 window.open(gameUrls[gameType], '_blank');
-            } else if (gameUrls[gameType]) {
-                // For games that exist but aren't ready yet, could either:
-                // 1. Open the game page, or 2. Show coming soon popup
-                // For now, let's show popup until games are built
-                const info = gameInfo[gameType];
-                document.getElementById('popupTitle').textContent = info.title;
-                document.getElementById('popupMessage').textContent = info.text;
-                document.getElementById('popupOverlay').style.display = 'flex';
             } else {
                 // Fallback for any missing games
                 document.getElementById('popupTitle').textContent = 'Game Coming Soon';
