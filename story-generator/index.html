@@ -1,1 +1,1645 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#667eea">
+<title>Ilsley Story Generator</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+html, body {
+width: 100%;
+height: 100%;
+overflow-x: hidden;
+-webkit-overflow-scrolling: touch;
+position: relative;
+}
+
+body {
+font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
+background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+min-height: 100vh;
+min-height: -webkit-fill-available;
+height: 100%;
+padding: 10px;
+margin: 0;
+display: flex;
+flex-direction: column;
+overscroll-behavior-y: none;
+-webkit-overflow-scrolling: touch;
+}
+
+.container {
+max-width: 800px;
+margin: 0 auto;
+background: white;
+border-radius: 15px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+overflow: hidden;
+width: 100%;
+height: 100%;
+min-height: calc(100vh - 20px);
+min-height: calc(-webkit-fill-available - 20px);
+flex: 1;
+display: flex;
+flex-direction: column;
+-webkit-overflow-scrolling: touch;
+position: relative;
+}
+
+.header {
+background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+padding: 20px;
+text-align: center;
+color: white;
+text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+}
+
+.header h1 {
+font-size: 2.5em;
+margin-bottom: 10px;
+}
+
+.header p {
+font-size: 1.2em;
+opacity: 0.9;
+}
+
+/* MAIN SECTIONS - Only one visible at a time */
+.form-section {
+padding: 20px;
+flex: 1;
+overflow-y: auto;
+transition: opacity 0.5s ease, transform 0.5s ease;
+display: block;
+}
+
+.form-section.hidden {
+display: none;
+}
+
+.loading-section {
+padding: 20px 20px 0 20px;
+flex: 1;
+display: none;
+flex-direction: column;
+transition: opacity 0.5s ease;
+min-height: 0;
+}
+
+.loading-section.visible {
+display: block;
+}
+
+.story-section {
+padding: 20px;
+flex: 1;
+overflow-y: auto;
+display: none;
+transition: opacity 0.5s ease;
+}
+
+.story-section.visible {
+display: block;
+}
+
+.examples {
+background: #f8f9ff;
+padding: 20px;
+border-radius: 15px;
+margin-bottom: 30px;
+}
+
+.examples h3 {
+color: #333;
+margin-bottom: 15px;
+}
+
+.examples p {
+color: #666;
+line-height: 1.5;
+}
+
+.input-group {
+margin-bottom: 25px;
+}
+
+.input-group label {
+display: block;
+font-size: 1.3em;
+color: #333;
+margin-bottom: 8px;
+font-weight: bold;
+}
+
+.input-group select, .input-group input {
+width: 100%;
+padding: 15px;
+border: 3px solid #e0e0e0;
+border-radius: 15px;
+font-size: 1.1em;
+font-family: inherit;
+transition: all 0.3s ease;
+}
+
+.input-group input:focus, .input-group select:focus {
+outline: none;
+border-color: #ff6b6b;
+box-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+}
+
+.character-builder {
+background: #fff8e1;
+border: 2px solid #ffd93d;
+border-radius: 15px;
+padding: 20px;
+margin-top: 15px;
+display: none;
+}
+
+.character-builder h4 {
+color: #333;
+margin-bottom: 15px;
+font-size: 1.2em;
+}
+
+.character-details {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+}
+
+.detail-group {
+margin-bottom: 10px;
+}
+
+.detail-group label {
+display: block;
+font-size: 1em;
+color: #555;
+margin-bottom: 5px;
+font-weight: bold;
+}
+
+.detail-group select {
+width: 100%;
+padding: 8px;
+border: 2px solid #e0e0e0;
+border-radius: 8px;
+font-size: 1em;
+}
+
+.toggle-builder {
+background: #ffd93d;
+color: #333;
+padding: 15px 20px;
+border: none;
+border-radius: 10px;
+cursor: pointer;
+font-size: 1.1em;
+font-weight: bold;
+margin: 15px auto;
+display: block;
+transition: all 0.3s ease;
+text-align: center;
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.toggle-builder:hover {
+background: #ffcc02;
+transform: translateY(-1px);
+}
+
+.character-preview {
+grid-column: 1 / -1;
+background: #f0f8ff;
+padding: 15px;
+border-radius: 10px;
+margin-top: 15px;
+color: #333;
+}
+
+.character-preview strong {
+display: block;
+margin-bottom: 8px;
+font-size: 1.1em;
+}
+
+.preview-editor {
+width: 100%;
+min-height: 60px;
+padding: 10px;
+border: 2px solid #e0e0e0;
+border-radius: 8px;
+font-size: 1em;
+font-family: inherit;
+resize: vertical;
+background: white;
+transition: border-color 0.3s ease;
+}
+
+.preview-editor:focus {
+outline: none;
+border-color: #4CAF50;
+box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+}
+
+.preview-help {
+font-size: 0.9em;
+color: #666;
+margin-top: 5px;
+font-style: italic;
+}
+
+.button-row {
+display: flex;
+gap: 10px;
+margin-bottom: 25px;
+flex-wrap: wrap;
+}
+
+.surprise-btn {
+flex: 1;
+min-width: 160px;
+padding: 15px 20px;
+font-size: 1.1em;
+font-weight: bold;
+background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+color: white;
+border: none;
+border-radius: 15px;
+cursor: pointer;
+transition: all 0.3s ease;
+text-transform: uppercase;
+letter-spacing: 1px;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
+.surprise-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+}
+
+.reset-btn {
+flex: 1;
+min-width: 120px;
+padding: 15px 20px;
+font-size: 1.1em;
+font-weight: bold;
+background: linear-gradient(45deg, #ff9500, #ff7b00);
+color: white;
+border: none;
+border-radius: 15px;
+cursor: pointer;
+transition: all 0.3s ease;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.reset-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(255, 149, 0, 0.4);
+}
+
+.generate-btn {
+flex: 2;
+min-width: 200px;
+padding: 20px;
+font-size: 1.4em;
+font-weight: bold;
+background: linear-gradient(45deg, #4CAF50, #45a049);
+color: white;
+border: none;
+border-radius: 15px;
+cursor: pointer;
+transition: all 0.3s ease;
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.generate-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+}
+
+.generate-btn:active, .reset-btn:active {
+transform: translateY(0);
+}
+
+.generate-btn:disabled, .reset-btn:disabled {
+background: #ccc;
+cursor: not-allowed;
+transform: none;
+}
+
+/* START AGAIN BUTTON */
+.start-again-btn {
+width: 100%;
+padding: 20px;
+font-size: 1.4em;
+font-weight: bold;
+background: linear-gradient(45deg, #667eea, #764ba2);
+color: white;
+border: none;
+border-radius: 15px;
+cursor: pointer;
+transition: all 0.3s ease;
+text-transform: uppercase;
+letter-spacing: 1px;
+margin-top: 30px;
+}
+
+.start-again-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* STORY DISPLAY */
+.story-choices-summary {
+font-size: 1em;
+background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+border: 2px solid #4a90e2;
+border-radius: 12px;
+padding: 15px 20px;
+margin-bottom: 20px;
+color: #2c3e50;
+line-height: 1.4;
+}
+
+.story-choices-summary h4 {
+color: #4a90e2;
+margin-bottom: 10px;
+font-size: 1.1em;
+text-align: center;
+}
+
+.choice-item {
+margin-bottom: 6px;
+display: flex;
+align-items: flex-start;
+gap: 8px;
+}
+
+.choice-icon {
+font-size: 1.1em;
+margin-top: 1px;
+flex-shrink: 0;
+}
+
+.choice-text {
+flex: 1;
+}
+
+.story-title {
+font-size: 2.2em;
+font-weight: bold;
+color: #2c3e50;
+text-align: center;
+margin-bottom: 25px;
+padding: 20px;
+background: linear-gradient(135deg, #fff9c4 0%, #ffe066 100%);
+border-radius: 15px;
+border: 3px solid #ffd93d;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+line-height: 1.2;
+box-shadow: 0 5px 15px rgba(255, 217, 61, 0.3);
+}
+
+.story-text {
+font-size: 1.2em;
+line-height: 1.6;
+color: #444;
+white-space: pre-wrap;
+background: white;
+padding: 25px;
+border-radius: 15px;
+border: 2px solid #e0e0e0;
+box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* LOADING ANIMATION */
+.loading-container {
+text-align: center;
+padding: 10px 20px;
+max-width: 500px;
+margin: 0 auto;
+}
+
+.cogs-container {
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 20px;
+margin: 10px 0 20px 0;
+height: 90px;
+}
+
+.cog {
+font-size: 3em;
+filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+}
+
+.cog-large {
+animation: spin-clockwise 4s linear infinite;
+color: #4a90e2;
+}
+
+.cog-medium {
+animation: spin-counter 3s linear infinite;
+color: #ff6b6b;
+}
+
+.cog-small {
+animation: spin-clockwise 2s linear infinite;
+color: #ffd93d;
+}
+
+@keyframes spin-clockwise {
+from { transform: rotate(0deg); }
+to { transform: rotate(360deg); }
+}
+
+@keyframes spin-counter {
+from { transform: rotate(360deg); }
+to { transform: rotate(0deg); }
+}
+
+.progress-container {
+margin: 25px 0;
+padding: 0 20px;
+}
+
+.progress-bar {
+width: 100%;
+height: 25px;
+background: #e8e8e8;
+border-radius: 15px;
+overflow: hidden;
+box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+position: relative;
+margin: 15px 0;
+}
+
+.progress-fill {
+height: 100%;
+background: linear-gradient(90deg, #4CAF50, #45a049, #66bb6a);
+border-radius: 15px;
+transition: width 0.5s ease;
+position: relative;
+width: 0%;
+}
+
+.progress-fill::after {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+0% { transform: translateX(-100%); }
+100% { transform: translateX(100%); }
+}
+
+.progress-text {
+font-size: 1.2em;
+color: #4a4a4a;
+font-weight: bold;
+margin-bottom: 10px;
+}
+
+.progress-percentage {
+font-size: 2em;
+color: #4CAF50;
+font-weight: bold;
+margin-top: 15px;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.loading-text {
+font-size: 1.1em;
+color: #666;
+margin-top: 15px;
+opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+body {
+padding: 5px;
+}
+
+.container {
+border-radius: 10px;
+margin: 0;
+width: calc(100% - 10px);
+}
+
+.form-section, .story-section {
+padding: 15px;
+}
+
+.header {
+padding: 15px;
+}
+
+.header h1 {
+font-size: 1.8em;
+margin-bottom: 5px;
+}
+
+.header p {
+font-size: 1em;
+}
+
+.examples {
+padding: 15px;
+margin-bottom: 20px;
+}
+
+.examples h3 {
+font-size: 1.2em;
+}
+
+.examples p {
+font-size: 0.9em;
+}
+
+.input-group {
+margin-bottom: 20px;
+}
+
+.input-group label {
+font-size: 1.1em;
+margin-bottom: 6px;
+}
+
+.input-group select, .input-group input {
+padding: 12px;
+font-size: 16px;
+border-radius: 12px;
+}
+
+.character-builder {
+padding: 15px;
+}
+
+.character-details {
+grid-template-columns: 1fr;
+gap: 10px;
+}
+
+.detail-group select {
+padding: 10px;
+font-size: 16px;
+}
+
+.toggle-builder {
+padding: 12px 16px;
+font-size: 1em;
+margin: 10px auto;
+}
+
+.button-row {
+flex-direction: column;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+.reset-btn, .generate-btn, .start-again-btn {
+font-size: 1.1em;
+padding: 15px;
+}
+
+.story-choices-summary {
+font-size: 0.9em;
+padding: 12px 15px;
+margin-bottom: 15px;
+}
+
+.story-choices-summary h4 {
+font-size: 1em;
+margin-bottom: 8px;
+}
+
+.choice-item {
+margin-bottom: 5px;
+gap: 6px;
+}
+
+.choice-icon {
+font-size: 1em;
+}
+
+.story-title {
+font-size: 1.6em;
+padding: 15px;
+margin-bottom: 20px;
+}
+
+.story-text {
+font-size: 1.1em;
+padding: 15px;
+}
+
+.cog {
+font-size: 2.5em;
+}
+
+.cogs-container {
+height: 70px;
+margin: 20px 0;
+gap: 15px;
+}
+
+.progress-text {
+font-size: 1em;
+}
+
+.loading-container {
+padding: 20px 15px;
+}
+
+.loading-text {
+font-size: 1em;
+}
+}
+
+@media (max-width: 480px) {
+html, body {
+height: 100%;
+height: -webkit-fill-available;
+width: 100%;
+position: fixed;
+overflow: hidden;
+}
+
+body {
+padding: 2px;
+font-size: 14px;
+height: 100vh;
+height: -webkit-fill-available;
+min-height: 100vh;
+min-height: -webkit-fill-available;
+}
+
+.container {
+border-radius: 8px;
+width: calc(100vw - 4px);
+height: calc(100vh - 4px);
+height: calc(-webkit-fill-available - 4px);
+min-height: calc(100vh - 4px);
+min-height: calc(-webkit-fill-available - 4px);
+margin: 0;
+position: relative;
+overflow: hidden;
+}
+
+.header {
+flex-shrink: 0;
+}
+
+.header h1 {
+font-size: 1.6em;
+}
+
+.header p {
+font-size: 0.9em;
+}
+
+.form-section, .story-section {
+padding: 12px;
+flex: 1;
+overflow-y: auto;
+-webkit-overflow-scrolling: touch;
+height: auto;
+}
+
+.examples {
+padding: 12px;
+}
+
+.input-group select, .input-group input {
+padding: 14px;
+font-size: 16px;
+}
+
+.button-row {
+flex-direction: column;
+gap: 8px;
+}
+
+.reset-btn, .generate-btn, .start-again-btn {
+padding: 16px;
+font-size: 1em;
+border-radius: 12px;
+}
+
+.story-title {
+font-size: 1.4em;
+padding: 12px;
+}
+
+.cogs-container {
+height: 60px;
+margin: 15px 0;
+}
+
+.cog {
+font-size: 2em;
+}
+}
+
+@supports (-webkit-appearance: none) {
+html {
+height: -webkit-fill-available;
+}
+
+body {
+min-height: -webkit-fill-available;
+}
+}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="header">
+<h1>Short Story Studio</h1>
+<p>Create amazing stories with Google Gemini AI!</p>
+</div>
+
+<!-- FORM SECTION (visible initially) -->
+<div id="formSection" class="form-section">
+<div class="examples">
+<h3>🌟 How it works:</h3>
+<p>Choose from our fun options OR create your own by selecting "✏️ Create My Own!" Pick a character, a magical place, and a special object. You can also use the Character Creator to make your character extra special with unique details! Our AI will create a unique 400-500 word adventure story just for you!</p>
+</div>
+
+<div class="input-group">
+<label for="moodSelect">🎭 What mood should your story have?</label>
+<select id="moodSelect">
+<option value="">Choose a story mood...</option>
+<option value="funny and silly">Funny & Silly</option>
+<option value="exciting and adventurous">Exciting & Adventurous</option>
+<option value="magical and mysterious">Magical & Mysterious</option>
+<option value="heartwarming and friendly">Heartwarming & Friendly</option>
+<option value="curious and educational">Curious & Educational</option>
+<option value="brave and heroic">Brave & Heroic</option>
+<option value="whimsical and dreamlike">Whimsical & Dreamlike</option>
+<option value="clever and puzzle-solving">Clever & Puzzle-Solving</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="moodCustom" placeholder="Type your own story mood... (e.g., spooky but not scary, musical and dancey)" style="display: none; margin-top: 10px;">
+</div>
+
+<div class="input-group">
+<label for="characterSelect">🦸 Choose your main character:</label>
+<select id="characterSelect">
+<option value="">Pick a character...</option>
+<option value="a brave knight">A Brave Knight</option>
+<option value="a curious cat">A Curious Cat</option>
+<option value="a young wizard">A Young Wizard</option>
+<option value="a friendly dragon">A Friendly Dragon</option>
+<option value="a clever robot">A Clever Robot</option>
+<option value="a magical fairy">A Magical Fairy</option>
+<option value="a space explorer">A Space Explorer</option>
+<option value="a detective mouse">A Detective Mouse</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="characterCustom" placeholder="Type your own character... (e.g., a singing elephant)" style="display: none; margin-top: 10px;">
+
+<button type="button" class="toggle-builder" id="toggleBuilderBtn">
+🎨 Make My Character Special! (Optional)
+</button>
+
+<div id="characterBuilder" class="character-builder">
+<h4>✨ Character Creator - Make your character unique!</h4>
+<div class="character-details">
+<div class="detail-group">
+<label for="appearance">👀 How do they look?</label>
+<select id="appearance">
+<option value="">Choose appearance...</option>
+<option value="with sparkling blue eyes">With sparkling blue eyes</option>
+<option value="with curly golden hair">With curly golden hair</option>
+<option value="wearing a rainbow cape">Wearing a rainbow cape</option>
+<option value="with silver wings">With silver wings</option>
+<option value="covered in colorful scales">Covered in colorful scales</option>
+<option value="glowing with soft light">Glowing with soft light</option>
+<option value="with a mischievous smile">With a mischievous smile</option>
+<option value="tiny but mighty">Tiny but mighty</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="appearanceCustom" placeholder="Type how they look... (e.g., with polka-dot fur and a top hat)" style="display: none; margin-top: 8px;">
+</div>
+
+<div class="detail-group">
+<label for="personality">💫 What are they like?</label>
+<select id="personality">
+<option value="">Choose personality...</option>
+<option value="who loves to help others">Who loves to help others</option>
+<option value="who is always curious about everything">Who is always curious</option>
+<option value="who never gives up">Who never gives up</option>
+<option value="who makes everyone laugh">Who makes everyone laugh</option>
+<option value="who is very wise for their age">Who is very wise</option>
+<option value="who loves solving mysteries">Who loves solving mysteries</option>
+<option value="who is kind to all creatures">Who is kind to all creatures</option>
+<option value="who dreams of great adventures">Who dreams of adventures</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="personalityCustom" placeholder="Type their personality... (e.g., who loves telling jokes and making friends)" style="display: none; margin-top: 8px;">
+</div>
+
+<div class="detail-group">
+<label for="hobby">🎯 What do they love doing?</label>
+<select id="hobby">
+<option value="">Choose a hobby...</option>
+<option value="collecting shiny rocks">Collecting shiny rocks</option>
+<option value="painting beautiful pictures">Painting beautiful pictures</option>
+<option value="singing magical songs">Singing magical songs</option>
+<option value="reading ancient books">Reading ancient books</option>
+<option value="dancing under the stars">Dancing under the stars</option>
+<option value="inventing amazing gadgets">Inventing amazing gadgets</option>
+<option value="talking to animals">Talking to animals</option>
+<option value="exploring hidden places">Exploring hidden places</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="hobbyCustom" placeholder="Type what they love doing... (e.g., baking cookies that grant wishes)" style="display: none; margin-top: 8px;">
+</div>
+
+<div class="detail-group">
+<label for="specialPower">⚡ What makes them special?</label>
+<select id="specialPower">
+<option value="">Choose special ability...</option>
+<option value="can understand any language">Can understand any language</option>
+<option value="has super hearing">Has super hearing</option>
+<option value="can become invisible when needed">Can become invisible</option>
+<option value="always knows the right thing to say">Always knows what to say</option>
+<option value="can heal hurt feelings">Can heal hurt feelings</option>
+<option value="remembers everything perfectly">Remembers everything perfectly</option>
+<option value="can sense when others need help">Can sense when others need help</option>
+<option value="brings good luck wherever they go">Brings good luck everywhere</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="specialPowerCustom" placeholder="Type their special ability... (e.g., can turn into a rainbow when happy)" style="display: none; margin-top: 8px;">
+</div>
+
+<div class="character-preview" id="characterPreview">
+<strong>✏️ Edit your character description:</strong>
+<textarea class="preview-editor" id="previewEditor" placeholder="Your character description will appear here as you make choices above. You can edit it to make it sound perfect!"></textarea>
+<div class="preview-help">💡 Tip: You can edit this text to make your character description sound just right!</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="input-group">
+<label for="settingSelect">🏰 Where does your adventure take place?</label>
+<select id="settingSelect">
+<option value="">Choose a place...</option>
+<option value="an enchanted forest">An Enchanted Forest</option>
+<option value="a mysterious castle">A Mysterious Castle</option>
+<option value="a distant planet">A Distant Planet</option>
+<option value="an underwater city">An Underwater City</option>
+<option value="a flying island">A Flying Island</option>
+<option value="a candy kingdom">A Candy Kingdom</option>
+<option value="a time machine">Inside a Time Machine</option>
+<option value="a secret laboratory">A Secret Laboratory</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="settingCustom" placeholder="Type your own place... (e.g., a library made of clouds)" style="display: none; margin-top: 10px;">
+</div>
+
+<div class="input-group">
+<label for="objectSelect">✨ What magical object do they find?</label>
+<select id="objectSelect">
+<option value="">Pick a magical object...</option>
+<option value="a glowing crystal">A Glowing Crystal</option>
+<option value="an ancient map">An Ancient Map</option>
+<option value="a talking book">A Talking Book</option>
+<option value="a magic wand">A Magic Wand</option>
+<option value="a golden key">A Golden Key</option>
+<option value="a mysterious potion">A Mysterious Potion</option>
+<option value="a singing jewel">A Singing Jewel</option>
+<option value="a time-traveling watch">A Time-Traveling Watch</option>
+<option value="custom">✏️ Create My Own!</option>
+</select>
+<input type="text" id="objectCustom" placeholder="Type your own magical object... (e.g., a paintbrush that makes real animals)" style="display: none; margin-top: 10px;">
+</div>
+
+<div class="button-row">
+<button type="button" class="surprise-btn" id="surpriseBtn">
+🎲 Surprise Me!
+</button>
+<button type="button" class="generate-btn" id="generateBtn">
+🎭 Generate My AI Story Adventure!
+</button>
+<button type="button" class="reset-btn" id="resetBtn">
+🔄 Reset Form
+</button>
+</div>
+</div>
+
+<!-- LOADING SECTION (hidden initially) -->
+<div id="loadingSection" class="loading-section">
+<div class="loading-container">
+<div class="cogs-container">
+<div class="cog cog-large">⚙️</div>
+<div class="cog cog-medium">⚙️</div>
+<div class="cog cog-small">⚙️</div>
+</div>
+
+<div class="progress-container">
+<div class="progress-text" id="progressText">🤖 AI is reading your choices...</div>
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+<div class="progress-percentage" id="progressPercentage">0%</div>
+</div>
+
+<div class="loading-text">Creating your magical adventure story!</div>
+</div>
+</div>
+
+<!-- STORY SECTION (hidden initially) -->
+<div id="storySection" class="story-section">
+<div id="storyChoicesSummary" class="story-choices-summary"></div>
+<div id="storyTitle" class="story-title"></div>
+<div id="storyText" class="story-text"></div>
+<button type="button" class="start-again-btn" id="startAgainBtn">
+🌟 Create Another Story
+</button>
+</div>
+</div>
+
+<script>
+(function() {
+    'use strict';
+    
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxWAsDjEjet36EjJriqVsQamCgT5DbaZsHxGzYxOELX5juIuIweAjT1xp0jcmNCFIqk/exec';
+    let callbackCounter = 0;
+
+    // Get section elements
+    const formSection = document.getElementById('formSection');
+    const loadingSection = document.getElementById('loadingSection');
+    const storySection = document.getElementById('storySection');
+
+    // Wait for DOM to be fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('🚀 Story Generator initialized!');
+        
+        // Get all the elements
+        const generateBtn = document.getElementById('generateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const surpriseBtn = document.getElementById('surpriseBtn');
+        const startAgainBtn = document.getElementById('startAgainBtn');
+        const toggleBuilderBtn = document.getElementById('toggleBuilderBtn');
+        
+        // Add event listeners using proper DOM methods
+        if (generateBtn) {
+            generateBtn.addEventListener('click', generateStory);
+            console.log('✅ Generate button event listener added');
+        }
+        
+        if (resetBtn) {
+            resetBtn.addEventListener('click', resetForm);
+            console.log('✅ Reset button event listener added');
+        }
+
+        if (surpriseBtn) {
+            surpriseBtn.addEventListener('click', surpriseMe);
+            console.log('✅ Surprise Me button event listener added');
+        }
+
+        if (startAgainBtn) {
+            startAgainBtn.addEventListener('click', startAgain);
+            console.log('✅ Start Again button event listener added');
+        }
+        
+        if (toggleBuilderBtn) {
+            toggleBuilderBtn.addEventListener('click', toggleCharacterBuilder);
+            console.log('✅ Toggle builder event listener added');
+        }
+
+        // Add change event listeners for custom inputs
+        const selectElements = [
+            'moodSelect', 'characterSelect', 'settingSelect', 'objectSelect',
+            'appearance', 'personality', 'hobby', 'specialPower'
+        ];
+        
+        selectElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('change', function() {
+                    toggleCustomInput(id.replace('Select', ''));
+                });
+            }
+        });
+
+        // Character preview updates
+        const characterElements = [
+            'characterSelect', 'characterCustom', 'appearance', 'appearanceCustom', 
+            'personality', 'personalityCustom', 'hobby', 'hobbyCustom', 
+            'specialPower', 'specialPowerCustom'
+        ];
+        
+        characterElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.addEventListener('change', updateCharacterPreview);
+                element.addEventListener('input', updateCharacterPreview);
+            }
+        });
+
+        // Preview editor manual edit detection
+        const previewEditor = document.getElementById('previewEditor');
+        if (previewEditor) {
+            previewEditor.addEventListener('input', function() {
+                this.dataset.autoGenerated = 'false';
+            });
+        }
+    });
+
+    // SECTION NAVIGATION FUNCTIONS
+    function showFormSection() {
+        formSection.classList.remove('hidden');
+        loadingSection.classList.remove('visible');
+        storySection.classList.remove('visible');
+        console.log('📝 Showing form section');
+    }
+
+    function showLoadingSection() {
+        formSection.classList.add('hidden');
+        loadingSection.classList.add('visible');
+        storySection.classList.remove('visible');
+        console.log('⏳ Showing loading section');
+    }
+
+    function showStorySection() {
+        formSection.classList.add('hidden');
+        loadingSection.classList.remove('visible');
+        storySection.classList.add('visible');
+        console.log('📖 Showing story section');
+    }
+
+    function startAgain() {
+        console.log('🔄 Starting again...');
+        resetForm();
+        showFormSection();
+    }
+
+    function surpriseMe() {
+        console.log('🎲 Surprise Me clicked!');
+        
+        // Random mood options
+        const moods = [
+            'funny and silly',
+            'exciting and adventurous', 
+            'magical and mysterious',
+            'heartwarming and friendly',
+            'curious and educational',
+            'brave and heroic',
+            'whimsical and dreamlike',
+            'clever and puzzle-solving'
+        ];
+        
+        // Random character options
+        const characters = [
+            'a brave knight',
+            'a curious cat',
+            'a young wizard',
+            'a friendly dragon',
+            'a clever robot',
+            'a magical fairy',
+            'a space explorer',
+            'a detective mouse'
+        ];
+        
+        // Random setting options
+        const settings = [
+            'an enchanted forest',
+            'a mysterious castle',
+            'a distant planet',
+            'an underwater city',
+            'a flying island',
+            'a candy kingdom',
+            'a time machine',
+            'a secret laboratory'
+        ];
+        
+        // Random object options
+        const objects = [
+            'a glowing crystal',
+            'an ancient map',
+            'a talking book',
+            'a magic wand',
+            'a golden key',
+            'a mysterious potion',
+            'a singing jewel',
+            'a time-traveling watch'
+        ];
+        
+        // Pick random options
+        const randomMood = moods[Math.floor(Math.random() * moods.length)];
+        const randomCharacter = characters[Math.floor(Math.random() * characters.length)];
+        const randomSetting = settings[Math.floor(Math.random() * settings.length)];
+        const randomObject = objects[Math.floor(Math.random() * objects.length)];
+        
+        console.log('🎲 Random choices:', { randomMood, randomCharacter, randomSetting, randomObject });
+        
+        // Set the form values
+        document.getElementById('moodSelect').value = randomMood;
+        document.getElementById('characterSelect').value = randomCharacter;
+        document.getElementById('settingSelect').value = randomSetting;
+        document.getElementById('objectSelect').value = randomObject;
+        
+        // Hide any custom inputs that might be showing
+        document.getElementById('moodCustom').style.display = 'none';
+        document.getElementById('characterCustom').style.display = 'none';
+        document.getElementById('settingCustom').style.display = 'none';
+        document.getElementById('objectCustom').style.display = 'none';
+        
+        // Update character preview if needed
+        updateCharacterPreview();
+        
+        // Small visual feedback
+        surpriseBtn.textContent = '🎲 Surprised!';
+        setTimeout(() => {
+            surpriseBtn.textContent = '🎲 Surprise Me!';
+        }, 1000);
+        
+        console.log('✅ Form randomized successfully!');
+    }
+
+    function createChoicesSummary() {
+        console.log('🔧 Creating choices summary...');
+        
+        try {
+            const character = getEnhancedCharacter() || 'Unknown character';
+            const setting = getFieldValue('setting') || 'Unknown setting';
+            const object = getFieldValue('object') || 'Unknown object';
+            const mood = getMoodValue() || 'exciting and adventurous';
+
+            console.log('📝 Summary values:', { character, setting, object, mood });
+
+            const summaryHTML = `
+                <h4>✨ Your Story Choices ✨</h4>
+                <div class="choice-item">
+                    <span class="choice-icon">🦸</span>
+                    <span class="choice-text"><strong>Character:</strong> ${character}</span>
+                </div>
+                <div class="choice-item">
+                    <span class="choice-icon">🏰</span>
+                    <span class="choice-text"><strong>Setting:</strong> ${setting}</span>
+                </div>
+                <div class="choice-item">
+                    <span class="choice-icon">✨</span>
+                    <span class="choice-text"><strong>Object:</strong> ${object}</span>
+                </div>
+                <div class="choice-item">
+                    <span class="choice-icon">🎭</span>
+                    <span class="choice-text"><strong>Mood:</strong> ${mood}</span>
+                </div>
+            `;
+
+            const storyChoicesSummary = document.getElementById('storyChoicesSummary');
+            if (storyChoicesSummary) {
+                storyChoicesSummary.innerHTML = summaryHTML;
+                console.log('✅ Summary created successfully');
+            } else {
+                console.error('❌ Could not find summary element');
+            }
+        } catch (error) {
+            console.error('❌ Error creating summary:', error);
+            // Fallback simple summary
+            const storyChoicesSummary = document.getElementById('storyChoicesSummary');
+            if (storyChoicesSummary) {
+                storyChoicesSummary.innerHTML = '<h4>✨ Your Story Choices ✨</h4><p>Story choices captured!</p>';
+            }
+        }
+    }
+
+    function resetForm() {
+        console.log('🔄 Resetting form...');
+        
+        // Reset all selects and inputs
+        const elements = [
+            'moodSelect', 'moodCustom', 'characterSelect', 'characterCustom',
+            'settingSelect', 'settingCustom', 'objectSelect', 'objectCustom',
+            'appearance', 'appearanceCustom', 'personality', 'personalityCustom',
+            'hobby', 'hobbyCustom', 'specialPower', 'specialPowerCustom'
+        ];
+        
+        elements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.value = '';
+                if (id.includes('Custom')) {
+                    element.style.display = 'none';
+                }
+            }
+        });
+
+        // Reset character builder
+        const characterBuilder = document.getElementById('characterBuilder');
+        const toggleBuilderBtn = document.getElementById('toggleBuilderBtn');
+        if (characterBuilder) characterBuilder.style.display = 'none';
+        if (toggleBuilderBtn) toggleBuilderBtn.textContent = '🎨 Make My Character Special! (Optional)';
+
+        // Reset character preview
+        const previewEditor = document.getElementById('previewEditor');
+        if (previewEditor) {
+            previewEditor.value = '';
+            previewEditor.placeholder = 'Your character description will appear here as you make choices above. You can edit it to make it sound perfect!';
+            previewEditor.dataset.autoGenerated = 'true';
+        }
+
+        // Reset buttons
+        const generateBtn = document.getElementById('generateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        if (generateBtn) {
+            generateBtn.disabled = false;
+            generateBtn.textContent = '🎭 Generate My AI Story Adventure!';
+        }
+        if (resetBtn) resetBtn.disabled = false;
+        
+        console.log('✅ Form reset complete');
+    }
+
+    function toggleCharacterBuilder() {
+        const builder = document.getElementById('characterBuilder');
+        const button = document.getElementById('toggleBuilderBtn');
+
+        if (builder.style.display === 'none' || builder.style.display === '') {
+            builder.style.display = 'block';
+            button.textContent = '🎨 Hide Character Creator';
+        } else {
+            builder.style.display = 'none';
+            button.textContent = '🎨 Make My Character Special! (Optional)';
+        }
+    }
+
+    function toggleCustomInput(field) {
+        const selectElement = document.getElementById(field + 'Select');
+        const customInput = document.getElementById(field + 'Custom');
+
+        if (selectElement && customInput) {
+            if (selectElement.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.focus();
+            } else {
+                customInput.style.display = 'none';
+                customInput.value = '';
+            }
+
+            if (field === 'character') {
+                updateCharacterPreview();
+            }
+        }
+    }
+
+    function getFieldValue(field) {
+        const selectElement = document.getElementById(field + 'Select');
+        const customInput = document.getElementById(field + 'Custom');
+
+        if (selectElement && customInput) {
+            if (selectElement.value === 'custom') {
+                return customInput.value.trim();
+            } else {
+                return selectElement.value;
+            }
+        }
+        return '';
+    }
+
+    function getMoodValue() {
+        const selectElement = document.getElementById('moodSelect');
+        const customInput = document.getElementById('moodCustom');
+
+        if (selectElement && customInput) {
+            if (selectElement.value === 'custom') {
+                return customInput.value.trim();
+            } else {
+                return selectElement.value;
+            }
+        }
+        return '';
+    }
+
+    function getCharacterDetailValue(field) {
+        const selectElement = document.getElementById(field);
+        const customInput = document.getElementById(field + 'Custom');
+
+        if (selectElement && customInput) {
+            if (selectElement.value === 'custom') {
+                return customInput.value.trim();
+            } else {
+                return selectElement.value;
+            }
+        }
+        return '';
+    }
+
+    function updateCharacterPreview() {
+        const baseCharacter = getFieldValue('character');
+        const appearance = getCharacterDetailValue('appearance');
+        const personality = getCharacterDetailValue('personality');
+        const hobby = getCharacterDetailValue('hobby');
+        const specialPower = getCharacterDetailValue('specialPower');
+
+        const previewEditor = document.getElementById('previewEditor');
+        if (!previewEditor) return;
+
+        if (!baseCharacter) {
+            previewEditor.placeholder = 'Choose a character first to see the preview!';
+            previewEditor.value = '';
+            return;
+        }
+
+        let preview = baseCharacter;
+
+        if (appearance) preview += ` ${appearance}`;
+        if (personality) preview += `, ${personality}`;
+        if (hobby) preview += ` and loves ${hobby}`;
+        if (specialPower) preview += `. They ${specialPower}`;
+
+        // Only update if user hasn't manually edited it
+        if (previewEditor.value === '' || previewEditor.dataset.autoGenerated === 'true') {
+            previewEditor.value = preview + '.';
+            previewEditor.dataset.autoGenerated = 'true';
+            previewEditor.placeholder = 'Edit this description to make it sound perfect!';
+        }
+    }
+
+    function getEnhancedCharacter() {
+        const previewEditor = document.getElementById('previewEditor');
+
+        // If user has edited the preview, use their version
+        if (previewEditor && previewEditor.value.trim() && previewEditor.dataset.autoGenerated === 'false') {
+            return previewEditor.value.trim();
+        }
+
+        // Otherwise use the auto-generated version
+        const baseCharacter = getFieldValue('character');
+        const appearance = getCharacterDetailValue('appearance');
+        const personality = getCharacterDetailValue('personality');
+        const hobby = getCharacterDetailValue('hobby');
+        const specialPower = getCharacterDetailValue('specialPower');
+
+        let enhancedCharacter = baseCharacter;
+        const details = [];
+
+        if (appearance) details.push(appearance);
+        if (personality) details.push(personality);
+
+        if (details.length > 0) {
+            enhancedCharacter += ` ${details.join(', ')}`;
+        }
+
+        if (hobby) {
+            enhancedCharacter += ` who loves ${hobby}`;
+        }
+
+        if (specialPower) {
+            enhancedCharacter += ` and ${specialPower}`;
+        }
+
+        return enhancedCharacter;
+    }
+
+    function startProgressAnimation() {
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const progressPercentage = document.getElementById('progressPercentage');
+
+        const stages = [
+            { percent: 18, text: "🤖 AI is reading your choices...", duration: 2500 },
+            { percent: 35, text: "📚 Gathering story elements...", duration: 3000 },
+            { percent: 58, text: "✨ Creating magical plot...", duration: 4000 },
+            { percent: 78, text: "📝 Writing your adventure...", duration: 4000 },
+            { percent: 95, text: "🎭 Adding finishing touches...", duration: 2500 }
+        ];
+
+        let currentStage = 0;
+        let currentProgress = 0;
+        let activeInterval = null;
+
+        // Store reference to stop animation when story arrives
+        window.stopProgressAnimation = function() {
+            if (activeInterval) {
+                clearInterval(activeInterval);
+                activeInterval = null;
+            }
+            currentStage = stages.length; // Stop all stages
+        };
+
+        function updateProgress() {
+            if (currentStage < stages.length) {
+                const stage = stages[currentStage];
+                const increment = (stage.percent - currentProgress) / 25;
+
+                progressText.textContent = stage.text;
+
+                activeInterval = setInterval(() => {
+                    currentProgress += increment;
+                    if (currentProgress >= stage.percent) {
+                        currentProgress = stage.percent;
+                        clearInterval(activeInterval);
+                        activeInterval = null;
+                        currentStage++;
+                        if (currentStage < stages.length) {
+                            setTimeout(updateProgress, 300);
+                        }
+                    }
+
+                    progressFill.style.width = currentProgress + '%';
+                    progressPercentage.textContent = Math.round(currentProgress) + '%';
+                }, stage.duration / 25);
+            }
+        }
+
+        updateProgress();
+    }
+
+    function generateStory() {
+        console.log('🎭 Generate story clicked!');
+
+        try {
+            const character = getEnhancedCharacter();
+            const setting = getFieldValue('setting');
+            const object = getFieldValue('object');
+            const mood = getMoodValue() || 'exciting and adventurous';
+
+            console.log('📝 Form values:', { character, setting, object, mood });
+
+            if (!getFieldValue('character') || !setting || !object) {
+                alert('Please fill in all fields to create your story!');
+                return;
+            }
+
+            const baseCharacter = getFieldValue('character');
+            if (baseCharacter.length < 2 || setting.length < 2 || object.length < 2) {
+                alert('Please make sure your entries have at least 2 letters!');
+                return;
+            }
+
+            // SHOW LOADING SECTION (hide form completely)
+            showLoadingSection();
+
+            // Start progress animation
+            startProgressAnimation();
+
+            // Track timing for minimum 10-second animation
+            const startTime = Date.now();
+            let aiResponseReceived = false;
+            let storyData = null;
+
+            // Minimum 10-second timer
+            const minimumWaitTime = 10000; // 10 seconds
+            
+            function checkIfReadyToShowStory() {
+                const elapsedTime = Date.now() - startTime;
+                const minimumTimeReached = elapsedTime >= minimumWaitTime;
+                
+                console.log(`⏱️ Elapsed: ${Math.round(elapsedTime/1000)}s, AI Ready: ${aiResponseReceived}, Min Time: ${minimumTimeReached}`);
+                
+                if (aiResponseReceived && minimumTimeReached) {
+                    console.log('✅ Both conditions met - showing story');
+                    displayStory(storyData);
+                } else if (aiResponseReceived && !minimumTimeReached) {
+                    console.log('⏳ AI ready but waiting for minimum time...');
+                    const remainingTime = minimumWaitTime - elapsedTime;
+                    setTimeout(() => {
+                        console.log('✅ Minimum time reached - showing story');
+                        displayStory(storyData);
+                    }, remainingTime);
+                }
+            }
+
+            function displayStory(response) {
+                // Stop progress animation
+                if (window.stopProgressAnimation) {
+                    window.stopProgressAnimation();
+                }
+
+                // Complete progress bar
+                const progressFill = document.getElementById('progressFill');
+                const progressText = document.getElementById('progressText');
+                const progressPercentage = document.getElementById('progressPercentage');
+
+                if (progressFill && progressText && progressPercentage) {
+                    progressFill.style.width = '100%';
+                    progressPercentage.textContent = '100%';
+                    progressText.textContent = '✅ Story complete!';
+                }
+
+                // Small delay to show completion, then show story
+                setTimeout(() => {
+                    console.log('🎬 About to show story section...');
+                    showStorySection();
+
+                    // Always create the summary first
+                    createChoicesSummary();
+
+                    const storyTitle = document.getElementById('storyTitle');
+                    const storyText = document.getElementById('storyText');
+
+                    if (response && response.story) {
+                        console.log('✅ Setting story content...');
+                        storyTitle.textContent = response.title || 'Your Amazing Adventure';
+                        storyText.textContent = response.story;
+                        console.log('✅ Story displayed successfully');
+                    } else {
+                        console.log('❌ No valid story in response, showing error');
+                        storyTitle.textContent = 'Story Error';
+                        storyText.innerHTML = '<div style="color: red;">Sorry, I couldn\'t generate a story right now. Please try again!</div>';
+                        console.error('❌ Invalid response format');
+                    }
+                }, 800);
+            }
+
+            const callbackName = 'storyCallback' + (++callbackCounter);
+            console.log('📞 Creating callback:', callbackName);
+
+            window[callbackName] = function(response) {
+                console.log('📨 AI Response received!', response);
+                
+                try {
+                    aiResponseReceived = true;
+                    storyData = response;
+                    checkIfReadyToShowStory();
+                } catch (error) {
+                    console.error('❌ Error processing response:', error);
+                    showStorySection();
+                    
+                    // Always create the summary even for errors
+                    createChoicesSummary();
+                    
+                    document.getElementById('storyTitle').textContent = 'Error';
+                    document.getElementById('storyText').innerHTML = '<div style="color: red;">Oops! Something went wrong processing the story. Please try again!</div>';
+                } finally {
+                    delete window[callbackName];
+                    const script = document.getElementById('jsonp-script');
+                    if (script) script.remove();
+                }
+            };
+
+            // Create JSONP request
+            const script = document.createElement('script');
+            script.id = 'jsonp-script';
+            const params = new URLSearchParams({
+                character: encodeURIComponent(character),
+                setting: encodeURIComponent(setting),
+                object: encodeURIComponent(object),
+                mood: encodeURIComponent(mood),
+                callback: callbackName
+            });
+
+            const finalUrl = `${SCRIPT_URL}?${params.toString()}`;
+            console.log('🌐 Making request to:', finalUrl);
+
+            script.src = finalUrl;
+
+            script.onerror = function(error) {
+                console.error('❌ Script loading failed:', error);
+                
+                // Still respect minimum time even for errors
+                const elapsedTime = Date.now() - startTime;
+                const remainingTime = Math.max(0, minimumWaitTime - elapsedTime);
+                
+                setTimeout(() => {
+                    showStorySection();
+                    
+                    // Always create the summary even for connection errors
+                    createChoicesSummary();
+                    
+                    document.getElementById('storyTitle').textContent = 'Connection Error';
+                    document.getElementById('storyText').innerHTML = '<div style="color: red;">Failed to connect to the AI service. Please try again in a moment.</div>';
+                }, remainingTime);
+                
+                delete window[callbackName];
+            };
+
+            document.head.appendChild(script);
+            console.log('📤 Request sent!');
+
+        } catch (error) {
+            console.error('❌ Fatal error in generateStory:', error);
+            alert('Something went wrong. Check the console for details.');
+        }
+    }
+
+})();
+</script>
+</body>
+</html>
