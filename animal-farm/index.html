@@ -1,1 +1,621 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Farm Propaganda Detective - Ilsley School</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #c41e3a;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .score-item {
+            background: #f0f0f0;
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #c41e3a;
+        }
+
+        .score-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .game-area {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .poster-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .poster {
+            background: #f8f8f8;
+            border: 3px solid #333;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 0 auto 20px;
+            max-width: 500px;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .poster-title {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #c41e3a;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .poster-text {
+            font-size: 1.4em;
+            line-height: 1.4;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .poster-signature {
+            font-style: italic;
+            color: #666;
+            margin-top: 20px;
+            font-size: 1.1em;
+        }
+
+        .techniques-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .technique-button {
+            background: #ffd700;
+            border: 3px solid #333;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .technique-button:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .technique-button.selected {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .technique-button.incorrect {
+            background: #f44336;
+            color: white;
+        }
+
+        .check-button {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .check-button:hover {
+            background: #a01729;
+            transform: translateY(-2px);
+        }
+
+        .check-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result-panel {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-panel.correct {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .result-panel.incorrect {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            font-size: 1.1em;
+            line-height: 1.5;
+        }
+
+        .next-button {
+            background: #2a5298;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .next-button:hover {
+            background: #1e3c72;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #c41e3a, #ffd700);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .poster-title {
+                font-size: 2em;
+            }
+            
+            .poster-text {
+                font-size: 1.2em;
+            }
+            
+            .score-board {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .techniques-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .celebration {
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .celebration h2 {
+            color: #c41e3a;
+            font-size: 2.5em;
+            margin-bottom: 15px;
+        }
+
+        .final-score {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .restart-button {
+            background: #c41e3a;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-button:hover {
+            background: #a01729;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🕵️ Animal Farm Propaganda Detective</h1>
+            <p>Spot the propaganda techniques in Orwell's masterpiece!</p>
+            <p><em>Develop critical thinking skills for literature and media</em></p>
+            
+            <div class="score-board">
+                <div class="score-item">
+                    <div class="score-number" id="correct-score">0</div>
+                    <div class="score-label">Correct</div>
+                </div>
+                <div class="score-item">
+                    <div class="score-number" id="total-attempts">0</div>
+                    <div class="score-label">Attempts</div>
+                </div>
+            </div>
+            
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <div class="game-area" id="game-area">
+            <div class="poster-container">
+                <div class="poster" id="poster">
+                    <div class="poster-title" id="poster-title">FOUR LEGS GOOD!</div>
+                    <div class="poster-text" id="poster-text">
+                        All animals are equal in the glorious revolution!<br>
+                        Napoleon leads us to prosperity!<br>
+                        Trust in our wise leader!
+                    </div>
+                    <div class="poster-signature" id="poster-signature">- Animal Farm Committee</div>
+                </div>
+            </div>
+
+            <h3 style="text-align: center; margin-bottom: 20px; color: #c41e3a;">
+                What propaganda technique is being used here?
+            </h3>
+
+            <div class="techniques-grid" id="techniques-grid">
+                <div class="technique-button" onclick="selectTechnique(this, 'repetition')">
+                    <strong>Repetition</strong><br>
+                    <small>Repeating key phrases</small>
+                </div>
+                <div class="technique-button" onclick="selectTechnique(this, 'bandwagon')">
+                    <strong>Bandwagon</strong><br>
+                    <small>"Everyone's doing it"</small>
+                </div>
+                <div class="technique-button" onclick="selectTechnique(this, 'authority')">
+                    <strong>Appeal to Authority</strong><br>
+                    <small>Trust the leader</small>
+                </div>
+                <div class="technique-button" onclick="selectTechnique(this, 'emotion')">
+                    <strong>Emotional Appeal</strong><br>
+                    <small>Fear, hope, pride</small>
+                </div>
+                <div class="technique-button" onclick="selectTechnique(this, 'glittering')">
+                    <strong>Glittering Generalities</strong><br>
+                    <small>Vague positive words</small>
+                </div>
+                <div class="technique-button" onclick="selectTechnique(this, 'scapegoat')">
+                    <strong>Scapegoating</strong><br>
+                    <small>Blame others</small>
+                </div>
+            </div>
+
+            <button class="check-button" id="check-button" onclick="checkAnswer()" disabled>
+                Check Your Answer
+            </button>
+
+            <div class="result-panel" id="result-panel">
+                <h3 id="result-title"></h3>
+                <div class="explanation" id="explanation"></div>
+                <button class="next-button" onclick="nextPoster()">Next Poster →</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Ilsley School</strong> - English & Media Department</p>
+            <p>Learn to identify propaganda in literature and modern media!</p>
+        </div>
+    </div>
+
+    <script>
+        let currentPoster = 0;
+        let selectedTechnique = null;
+        let correctAnswers = 0;
+        let totalAttempts = 0;
+
+        const posters = [
+            {
+                title: "FOUR LEGS GOOD!",
+                text: "All animals are equal in the glorious revolution!<br>Napoleon leads us to prosperity!<br>Trust in our wise leader!",
+                signature: "- Animal Farm Committee",
+                correctAnswer: "authority",
+                explanation: "This poster uses <strong>Appeal to Authority</strong> by positioning Napoleon as the wise leader who should be trusted without question. This technique makes people follow someone because of their position of power, not because of good reasons."
+            },
+            {
+                title: "WORK HARDER!",
+                text: "Boxer says: 'I will work harder!'<br>All loyal animals follow Boxer's example!<br>Everyone is working for the farm!",
+                signature: "- The Windmill Committee",
+                correctAnswer: "bandwagon",
+                explanation: "This uses the <strong>Bandwagon</strong> technique - 'everyone is doing it, so you should too!' It suggests that all good animals are working hard, so you must work hard to fit in with the group."
+            },
+            {
+                title: "BEWARE THE HUMANS!",
+                text: "Humans want to steal our freedom!<br>They will chain us again!<br>Only Napoleon protects us from their evil plans!",
+                signature: "- Animal Defence League",
+                correctAnswer: "scapegoat",
+                explanation: "This is classic <strong>Scapegoating</strong> - blaming all problems on one group (humans) to distract from real issues. By making humans the enemy, Napoleon deflects criticism from his own leadership."
+            },
+            {
+                title: "GLORIOUS FUTURE!",
+                text: "Freedom! Equality! Justice!<br>Our wonderful revolution brings happiness!<br>Magnificent progress for all animals!",
+                signature: "- Revolutionary Council",
+                correctAnswer: "glittering",
+                explanation: "This uses <strong>Glittering Generalities</strong> - beautiful-sounding words like 'freedom,' 'equality,' and 'magnificent' that sound good but don't give specific details about what's actually happening."
+            },
+            {
+                title: "NAPOLEON! NAPOLEON!",
+                text: "Napoleon is always right!<br>Napoleon protects us!<br>Napoleon! Napoleon! Napoleon!",
+                signature: "- Loyal Animals Committee",
+                correctAnswer: "repetition",
+                explanation: "This is pure <strong>Repetition</strong> - saying 'Napoleon' over and over to drill the message into people's minds. Repeating something makes it seem more important and memorable, even if it's not true."
+            },
+            {
+                title: "DEFEND OUR HOME!",
+                text: "Terrible enemies surround us!<br>Fear drives them to destroy our peace!<br>Only unity can save us from disaster!",
+                signature: "- Animal Security Force",
+                correctAnswer: "emotion",
+                explanation: "This poster uses <strong>Emotional Appeal</strong>, specifically fear. Words like 'terrible,' 'destroy,' and 'disaster' are designed to make animals scared so they'll support the leadership without thinking critically."
+            },
+            {
+                title: "SNOWBALL THE TRAITOR!",
+                text: "Snowball destroyed our windmill!<br>Snowball sabotages our food supplies!<br>All our problems are Snowball's fault!",
+                signature: "- Committee for Truth",
+                correctAnswer: "scapegoat",
+                explanation: "This is another example of <strong>Scapegoating</strong> - Napoleon blames everything that goes wrong on Snowball, even when Snowball isn't there. This deflects blame from Napoleon's poor leadership."
+            },
+            {
+                title: "JOIN YOUR COMRADES!",
+                text: "98% of animals support the new rules!<br>All smart animals agree with Napoleon!<br>Don't be left behind - join the majority!",
+                signature: "- Animal Unity Council",
+                correctAnswer: "bandwagon",
+                explanation: "This is classic <strong>Bandwagon</strong> propaganda with fake statistics. '98% support' and 'don't be left behind' pressure animals to go along with the crowd, even if the numbers are made up."
+            },
+            {
+                title: "REMEMBER OLD MAJOR!",
+                text: "Old Major's dream lives on through Napoleon!<br>Honor our founder's memory!<br>Napoleon carries forward the true revolution!",
+                signature: "- Memorial Committee",
+                correctAnswer: "authority",
+                explanation: "This uses <strong>Appeal to Authority</strong> by connecting Napoleon to the respected Old Major. It suggests that following Napoleon is the same as honoring Old Major, even though Napoleon has betrayed Old Major's principles."
+            },
+            {
+                title: "PROGRESS! SUCCESS! VICTORY!",
+                text: "Amazing achievements everywhere!<br>Tremendous progress in all areas!<br>Incredible success! Brilliant victory! Fantastic future!",
+                signature: "- Department of Statistics",
+                correctAnswer: "glittering",
+                explanation: "This poster is packed with <strong>Glittering Generalities</strong> - words like 'amazing,' 'tremendous,' and 'incredible' that sound impressive but give no specific facts or evidence about what's actually been achieved."
+            }
+        ];
+
+        function selectTechnique(button, technique) {
+            // Remove selection from all buttons
+            document.querySelectorAll('.technique-button').forEach(btn => {
+                btn.classList.remove('selected', 'incorrect');
+            });
+            
+            // Select the clicked button
+            button.classList.add('selected');
+            selectedTechnique = technique;
+            
+            // Enable check button
+            document.getElementById('check-button').disabled = false;
+        }
+
+        function checkAnswer() {
+            if (!selectedTechnique) return;
+            
+            totalAttempts++;
+            const isCorrect = selectedTechnique === posters[currentPoster].correctAnswer;
+            
+            if (isCorrect) {
+                correctAnswers++;
+                showResult(true);
+            } else {
+                showResult(false);
+                // Show incorrect selection
+                document.querySelector('.technique-button.selected').classList.add('incorrect');
+                // Highlight correct answer
+                const buttons = document.querySelectorAll('.technique-button');
+                buttons.forEach(btn => {
+                    if (btn.onclick.toString().includes(posters[currentPoster].correctAnswer)) {
+                        btn.classList.add('selected');
+                        btn.style.background = '#4CAF50';
+                    }
+                });
+            }
+            
+            updateScore();
+            document.getElementById('check-button').disabled = true;
+        }
+
+        function showResult(isCorrect) {
+            const resultPanel = document.getElementById('result-panel');
+            const resultTitle = document.getElementById('result-title');
+            const explanation = document.getElementById('explanation');
+            
+            resultPanel.style.display = 'block';
+            resultPanel.className = 'result-panel ' + (isCorrect ? 'correct' : 'incorrect');
+            
+            if (isCorrect) {
+                resultTitle.textContent = '🎉 Correct! Well done, detective!';
+            } else {
+                resultTitle.textContent = '❌ Not quite right. Here\'s what to look for:';
+            }
+            
+            explanation.innerHTML = posters[currentPoster].explanation;
+        }
+
+        function nextPoster() {
+            currentPoster++;
+            
+            if (currentPoster >= posters.length) {
+                showCelebration();
+                return;
+            }
+            
+            loadPoster();
+            resetInterface();
+            updateProgress();
+        }
+
+        function loadPoster() {
+            const poster = posters[currentPoster];
+            document.getElementById('poster-title').textContent = poster.title;
+            document.getElementById('poster-text').innerHTML = poster.text;
+            document.getElementById('poster-signature').textContent = poster.signature;
+        }
+
+        function resetInterface() {
+            selectedTechnique = null;
+            document.getElementById('check-button').disabled = true;
+            document.getElementById('result-panel').style.display = 'none';
+            
+            document.querySelectorAll('.technique-button').forEach(btn => {
+                btn.classList.remove('selected', 'incorrect');
+                btn.style.background = '#ffd700';
+            });
+        }
+
+        function updateScore() {
+            document.getElementById('correct-score').textContent = correctAnswers;
+            document.getElementById('total-attempts').textContent = totalAttempts;
+        }
+
+        function updateProgress() {
+            const progress = (currentPoster / posters.length) * 100;
+            document.getElementById('progress-fill').style.width = progress + '%';
+        }
+
+        function showCelebration() {
+            const gameArea = document.getElementById('game-area');
+            const percentage = Math.round((correctAnswers / totalAttempts) * 100);
+            
+            let message = '';
+            if (percentage >= 80) {
+                message = '🏆 Propaganda Master! You\'ve got excellent critical thinking skills!';
+            } else if (percentage >= 60) {
+                message = '🎖️ Good Detective Work! You\'re developing strong analysis skills!';
+            } else {
+                message = '🔍 Keep Practicing! You\'re learning to spot propaganda techniques!';
+            }
+            
+            gameArea.innerHTML = `
+                <div class="celebration">
+                    <h2>${message}</h2>
+                    <div class="final-score">
+                        You identified <strong>${correctAnswers}</strong> out of <strong>${totalAttempts}</strong> propaganda techniques correctly!
+                        <br><br>
+                        <strong>Score: ${percentage}%</strong>
+                    </div>
+                    <p style="margin-bottom: 20px; font-size: 1.1em;">
+                        You now understand how propaganda works in Animal Farm and can spot these techniques in real media too!
+                    </p>
+                    <button class="restart-button" onclick="restartGame()">
+                        🔄 Try Again
+                    </button>
+                </div>
+            `;
+        }
+
+        function restartGame() {
+            currentPoster = 0;
+            selectedTechnique = null;
+            correctAnswers = 0;
+            totalAttempts = 0;
+            
+            // Reload the page to reset everything
+            location.reload();
+        }
+
+        // Initialize the game
+        updateProgress();
+        updateScore();
+    </script>
+</body>
+</html>
