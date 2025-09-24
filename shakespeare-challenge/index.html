@@ -1,1 +1,751 @@
-test
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shakespeare Word Challenge - Archbishop Ilsley</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 4px solid #dc143c;
+        }
+
+        .header h1 {
+            color: #dc143c;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .school-name {
+            color: #1e3c72;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .header .subtitle {
+            color: #ffd700;
+            background: #333;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            border: 4px solid #ffd700;
+        }
+
+        .instructions {
+            background: linear-gradient(45deg, #ffd700, #ffcd00);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 3px solid #333;
+            text-align: center;
+        }
+
+        .instructions h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.4em;
+        }
+
+        .instructions p {
+            color: #333;
+            font-size: 1.1em;
+            line-height: 1.4;
+        }
+
+        .score-display {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            font-size: 1.3em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .word-display {
+            background: #f8f9fa;
+            border: 4px solid #dc143c;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .shakespeare-word {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #dc143c;
+            font-style: italic;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .word-context {
+            font-size: 1.1em;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .option-btn {
+            background: white;
+            border: 3px solid #1e3c72;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+            border-color: #ffd700;
+        }
+
+        .option-btn.selected {
+            background: #ffd700;
+            border-color: #333;
+            transform: scale(1.02);
+        }
+
+        .option-btn.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option-btn.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .action-buttons {
+            margin: 25px 0;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #dc143c, #b91c3c);
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .feedback {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 5px solid #1e3c72;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feedback h4 {
+            color: #dc143c;
+            margin-bottom: 10px;
+        }
+
+        .shakespeare-facts {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .shakespeare-facts h4 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .shakespeare-facts ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .shakespeare-facts li {
+            margin-bottom: 8px;
+            padding-left: 25px;
+            position: relative;
+        }
+
+        .shakespeare-facts li::before {
+            content: "🎭";
+            position: absolute;
+            left: 0;
+        }
+
+        .final-results {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .final-rank {
+            font-size: 2.2em;
+            margin-bottom: 15px;
+        }
+
+        .final-score {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .final-message {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #1e3c72;
+            font-size: 1.2em;
+        }
+
+        .emoji {
+            font-size: 1.2em;
+            margin: 0 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .shakespeare-word {
+                font-size: 2em;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎭 Shakespeare Word Challenge 📚</h1>
+            <div class="school-name">Archbishop Ilsley Catholic School</div>
+            <div class="subtitle">🧠 Can You Decode the Bard's Language? 🗡️</div>
+        </div>
+
+        <div class="game-container">
+            <div class="instructions">
+                <h3>🌟 How to Play 🌟</h3>
+                <p>Shakespeare used amazing words that we don't often use today! Look at each word and guess what it means. Some are funny, some are beautiful, all are from the great William Shakespeare!</p>
+            </div>
+
+            <div class="score-display" id="scoreDisplay">
+                🏆 Progress: 0/0 | Round 1 of 6 | Current: Word Detective Trainee
+            </div>
+
+            <div class="word-display" id="wordDisplay">
+                <div class="loading">
+                    🎭 Click "Start Challenge" to begin your Shakespeare adventure!
+                </div>
+            </div>
+
+            <div class="options-container" id="optionsContainer" style="display: none;">
+                <!-- Options will be dynamically generated -->
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="startBtn" onclick="startGame()">
+                    🎭 Start Challenge!
+                </button>
+                <button class="btn btn-primary" id="checkAnswerBtn" onclick="checkAnswer()" style="display: none;" disabled>
+                    🔍 Check My Answer!
+                </button>
+                <button class="btn btn-primary" id="nextQuestionBtn" onclick="nextQuestion()" style="display: none;">
+                    ➡️ Next Word!
+                </button>
+            </div>
+
+            <div class="feedback" id="feedbackSection">
+                <h4 id="feedbackTitle"></h4>
+                <p id="feedbackText"></p>
+            </div>
+
+            <div class="shakespeare-facts">
+                <h4>🎭 Fun Shakespeare Facts:</h4>
+                <ul>
+                    <li>Shakespeare invented over 1,700 words we still use today!</li>
+                    <li>Words like "bedroom", "lonely", and "fashionable" came from Shakespeare!</li>
+                    <li>He wrote 39 plays and 154 sonnets</li>
+                    <li>Shakespeare's plays are performed more often than any other playwright's</li>
+                    <li>Learning these old words helps you understand beautiful poetry and stories!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Shakespeare words with meanings and context
+        const shakespeareWords = [
+            {
+                word: "Wherefore",
+                context: "From Romeo and Juliet: 'Wherefore art thou Romeo?'",
+                correct: "Why (not where!)",
+                options: ["Where are you?", "Why (not where!)", "Who are you?", "When will you come?"]
+            },
+            {
+                word: "Prithee",
+                context: "A polite way to ask for something",
+                correct: "Please, I beg you",
+                options: ["Goodbye", "Please, I beg you", "Thank you", "Excuse me"]
+            },
+            {
+                word: "Forsooth",
+                context: "Used to emphasize the truth",
+                correct: "Indeed, truly",
+                options: ["Perhaps", "Indeed, truly", "Never", "Maybe"]
+            },
+            {
+                word: "Anon",
+                context: "I'll be with you anon!",
+                correct: "Soon, right away",
+                options: ["Never", "Yesterday", "Soon, right away", "Always"]
+            },
+            {
+                word: "Marry",
+                context: "Not about weddings! An exclamation",
+                correct: "Indeed! (an exclamation)",
+                options: ["Get married", "Indeed! (an exclamation)", "Be happy", "Go away"]
+            },
+            {
+                word: "Alack",
+                context: "Alack, what trouble this will bring!",
+                correct: "Alas, unfortunately",
+                options: ["Hooray!", "Alas, unfortunately", "Be quiet", "Look here"]
+            },
+            {
+                word: "Fie",
+                context: "Fie upon you for that trick!",
+                correct: "Shame on you!",
+                options: ["Well done!", "Shame on you!", "Hello there", "Goodbye"]
+            },
+            {
+                word: "Hark",
+                context: "Hark! I hear music playing",
+                correct: "Listen carefully",
+                options: ["Look over there", "Listen carefully", "Run away", "Come here"]
+            },
+            {
+                word: "Nay",
+                context: "Nay, I cannot come with you",
+                correct: "No",
+                options: ["Yes", "No", "Maybe", "Always"]
+            },
+            {
+                word: "Aye",
+                context: "Aye, I will help you",
+                correct: "Yes",
+                options: ["No", "Yes", "Perhaps", "Never"]
+            },
+            {
+                word: "Doth",
+                context: "She doth sing beautifully",
+                correct: "Does (old form)",
+                options: ["Did", "Does (old form)", "Will", "Should"]
+            },
+            {
+                word: "Methinks",
+                context: "Methinks it will rain today",
+                correct: "I think",
+                options: ["You think", "I think", "We think", "Nobody thinks"]
+            },
+            {
+                word: "Thou",
+                context: "Thou art my best friend",
+                correct: "You (old form)",
+                options: ["I", "You (old form)", "He", "We"]
+            },
+            {
+                word: "Mayhap",
+                context: "Mayhap we'll see you tomorrow",
+                correct: "Perhaps, maybe",
+                options: ["Never", "Always", "Perhaps, maybe", "Definitely"]
+            },
+            {
+                word: "Betimes",
+                context: "We must rise betimes tomorrow",
+                correct: "Early, in good time",
+                options: ["Late", "Early, in good time", "Slowly", "Loudly"]
+            },
+            {
+                word: "Fain",
+                context: "I would fain go with you",
+                correct: "Gladly, willingly",
+                options: ["Sadly", "Gladly, willingly", "Angrily", "Quietly"]
+            },
+            {
+                word: "Perchance",
+                context: "Perchance we'll meet again",
+                correct: "By chance, perhaps",
+                options: ["Definitely", "By chance, perhaps", "Never", "Always"]
+            },
+            {
+                word: "Hence",
+                context: "Get thee hence!",
+                correct: "Away from here",
+                options: ["Come closer", "Away from here", "Stay here", "Sit down"]
+            },
+            {
+                word: "Whence",
+                context: "Whence came you?",
+                correct: "From where",
+                options: ["To where", "From where", "At what time", "Why"]
+            },
+            {
+                word: "Whither",
+                context: "Whither are you going?",
+                correct: "To where, which way",
+                options: ["From where", "To where, which way", "At what time", "How"]
+            },
+            {
+                word: "Begone",
+                context: "Begone, foul spirit!",
+                correct: "Go away!",
+                options: ["Come here", "Go away!", "Sit down", "Be quiet"]
+            },
+            {
+                word: "Soft",
+                context: "But soft, what light yonder breaks?",
+                correct: "Wait, hold on",
+                options: ["Loudly", "Wait, hold on", "Quickly", "Roughly"]
+            },
+            {
+                word: "Zounds",
+                context: "Zounds! What a surprise!",
+                correct: "Good heavens! (surprise)",
+                options: ["Be quiet", "Good heavens! (surprise)", "Go away", "Come here"]
+            },
+            {
+                word: "Marry come up",
+                context: "Marry come up! Such behavior!",
+                correct: "Good gracious! (shock)",
+                options: ["Get married", "Good gracious! (shock)", "Come upstairs", "Be happy"]
+            },
+            {
+                word: "Grammercy",
+                context: "Grammercy for your kindness!",
+                correct: "Great thanks, much gratitude",
+                options: ["You're welcome", "Great thanks, much gratitude", "Excuse me", "I'm sorry"]
+            }
+        ];
+
+        // Game state
+        let score = 0;
+        let currentQuestion = 0;
+        let maxQuestions = 6;
+        let selectedOption = null;
+        let usedWords = [];
+        let currentWord = null;
+
+        function startGame() {
+            // Reset game
+            score = 0;
+            currentQuestion = 0;
+            usedWords = [];
+            selectedOption = null;
+            
+            // Hide start button, show game
+            document.getElementById('startBtn').style.display = 'none';
+            updateScore();
+            nextQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion >= maxQuestions) {
+                showFinalResults();
+                return;
+            }
+
+            // Reset UI
+            document.getElementById('checkAnswerBtn').style.display = 'inline-block';
+            document.getElementById('checkAnswerBtn').disabled = true;
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+            document.getElementById('feedbackSection').classList.remove('show');
+            selectedOption = null;
+
+            // Get unused word
+            const availableWords = shakespeareWords.filter((_, index) => !usedWords.includes(index));
+            if (availableWords.length === 0) {
+                // Reset if we've used all words
+                usedWords = [];
+            }
+            
+            const wordIndex = Math.floor(Math.random() * (availableWords.length || shakespeareWords.length));
+            currentWord = availableWords[wordIndex] || shakespeareWords[wordIndex];
+            usedWords.push(shakespeareWords.indexOf(currentWord));
+
+            // Display word
+            document.getElementById('wordDisplay').innerHTML = `
+                <div class="shakespeare-word">${currentWord.word}</div>
+                <div class="word-context">"${currentWord.context}"</div>
+            `;
+
+            // Create shuffled options
+            const shuffledOptions = [...currentWord.options].sort(() => Math.random() - 0.5);
+            const optionsHTML = shuffledOptions.map((option, index) => `
+                <div class="option-btn" onclick="selectOption('${option}', this)">
+                    ${option}
+                </div>
+            `).join('');
+
+            document.getElementById('optionsContainer').innerHTML = optionsHTML;
+            document.getElementById('optionsContainer').style.display = 'grid';
+
+            currentQuestion++;
+            updateScore();
+        }
+
+        function selectOption(option, element) {
+            // Clear previous selections
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            // Select current option
+            element.classList.add('selected');
+            selectedOption = option;
+            
+            // Enable check button
+            document.getElementById('checkAnswerBtn').disabled = false;
+        }
+
+        function checkAnswer() {
+            if (!selectedOption) return;
+
+            const isCorrect = selectedOption === currentWord.correct;
+            if (isCorrect) {
+                score++;
+            }
+
+            // Visual feedback
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                const btnText = btn.textContent.trim();
+                if (btnText === currentWord.correct) {
+                    btn.classList.add('correct');
+                } else if (btnText === selectedOption && !isCorrect) {
+                    btn.classList.add('incorrect');
+                }
+                btn.onclick = null; // Disable clicking
+            });
+
+            // Show feedback
+            const feedback = document.getElementById('feedbackSection');
+            const title = document.getElementById('feedbackTitle');
+            const text = document.getElementById('feedbackText');
+            
+            if (isCorrect) {
+                title.textContent = '🎉 Excellent, Word Detective!';
+                title.style.color = '#28a745';
+                text.textContent = `Perfect! "${currentWord.word}" means "${currentWord.correct}". Shakespeare used this word to make his writing more expressive and beautiful.`;
+            } else {
+                title.textContent = '🤔 Not quite right!';
+                title.style.color = '#dc3545';
+                text.textContent = `"${currentWord.word}" actually means "${currentWord.correct}". Shakespeare's language can be tricky, but that's what makes it so interesting to learn!`;
+            }
+            
+            feedback.classList.add('show');
+            
+            // Update buttons
+            document.getElementById('checkAnswerBtn').style.display = 'none';
+            if (currentQuestion >= maxQuestions) {
+                document.getElementById('nextQuestionBtn').textContent = '🏆 See Final Results!';
+            }
+            document.getElementById('nextQuestionBtn').style.display = 'inline-block';
+            
+            updateScore();
+        }
+
+        function updateScore() {
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            let rank = 'Word Detective Trainee';
+            
+            if (score >= 5) rank = 'Shakespeare Scholar 🌟';
+            else if (score >= 4) rank = 'Word Detective Expert 👑';
+            else if (score >= 3) rank = 'Word Detective Officer 🎭';
+            else if (score >= 2) rank = 'Word Detective Cadet 📚';
+            
+            if (currentQuestion <= maxQuestions) {
+                scoreDisplay.textContent = `🏆 Progress: ${score}/${currentQuestion - 1} | Round ${currentQuestion} of ${maxQuestions} | Current: ${rank}`;
+            }
+        }
+
+        function showFinalResults() {
+            const percentage = Math.round((score / maxQuestions) * 100);
+            
+            let rank = '';
+            let rankColor = '';
+            let rankIcon = '';
+            let message = '';
+            
+            if (percentage >= 83) {
+                rank = 'Shakespeare Scholar';
+                rankColor = '#ffd700';
+                rankIcon = '👑';
+                message = 'Outstanding! You truly understand the beauty of Shakespeare\'s language!';
+            } else if (percentage >= 67) {
+                rank = 'Word Detective Expert';
+                rankColor = '#c0c0c0';
+                rankIcon = '🎭';
+                message = 'Excellent work! You have a great grasp of Shakespearean vocabulary!';
+            } else if (percentage >= 50) {
+                rank = 'Word Detective Officer';
+                rankColor = '#cd7f32';
+                rankIcon = '📚';
+                message = 'Well done! You\'re developing a good understanding of old English!';
+            } else if (percentage >= 33) {
+                rank = 'Word Detective Cadet';
+                rankColor = '#4CAF50';
+                rankIcon = '🎯';
+                message = 'Good effort! Shakespeare\'s language is tricky - keep learning!';
+            } else {
+                rank = 'Word Detective Trainee';
+                rankColor = '#2196F3';
+                rankIcon = '📖';
+                message = 'Great start! Shakespeare\'s words are challenging - try again to improve!';
+            }
+            
+            document.getElementById('wordDisplay').innerHTML = `
+                <div class="final-results">
+                    <div style="font-size: 4em; margin-bottom: 20px;">${rankIcon}</div>
+                    <div class="final-rank" style="color: ${rankColor};">
+                        Final Rank: ${rank}
+                    </div>
+                    <div class="final-score" style="color: #333;">
+                        <strong>Score: ${score} out of ${maxQuestions} (${percentage}%)</strong>
+                    </div>
+                    <div class="final-message" style="border-left: 5px solid ${rankColor};">
+                        ${message}
+                    </div>
+                    <button class="btn btn-primary" onclick="location.reload()" style="margin-top: 20px;">
+                        🔄 Play Again
+                    </button>
+                </div>
+            `;
+            
+            // Hide other elements
+            document.getElementById('optionsContainer').style.display = 'none';
+            document.getElementById('checkAnswerBtn').style.display = 'none';
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+            document.getElementById('feedbackSection').classList.remove('show');
+            
+            // Update final score display
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.textContent = `🏆 Final Score: ${score}/${maxQuestions} | 🎭 Final Rank: ${rank}`;
+        }
+    </script>
+</body>
+</html>
