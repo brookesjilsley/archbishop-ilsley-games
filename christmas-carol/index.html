@@ -48,6 +48,38 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
+        .home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #c41e3a, #2a5298);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 0.95em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            background: linear-gradient(135deg, #d63447, #1e3a8a);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
         .header {
             background: white;
             border-radius: 15px;
@@ -508,11 +540,19 @@
                 padding: 8px 12px;
                 font-size: 0.8em;
             }
+
+            .home-button {
+                top: 15px;
+                left: 15px;
+                padding: 10px 14px;
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
+        <button class="home-button" onclick="goToHub()">🏠 Back to Hub</button>
         <button class="restart-fixed" onclick="restartGame()">🔄 Restart</button>
         
         <div class="header">
@@ -1290,6 +1330,10 @@
 
         function showLearningObjectives() {
             showScreen('learningScreen');
+        }
+
+        function goToHub() {
+            window.location.href = 'https://brookesjilsley.github.io/archbishop-ilsley-games/';
         }
     </script>
 </body>
