@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Scrooge's Redemption Journey - Archbishop Ilsley Catholic School</title>
+    <title>Christmas Carol Escape Room - Archbishop Ilsley Catholic School</title>
     <style>
         * {
             margin: 0;
@@ -19,12 +19,33 @@
         }
 
         .game-container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+        }
+
+        .restart-fixed {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #c41e3a, #8b0000);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .restart-fixed:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .header {
@@ -62,30 +83,54 @@
             padding: 20px;
             margin-bottom: 20px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            align-items: center;
         }
 
-        .transformation-meter {
-            background: #f0f0f0;
-            height: 30px;
-            border-radius: 15px;
-            overflow: hidden;
-            margin: 15px 0;
-            border: 3px solid #2a5298;
-        }
-
-        .transformation-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #c41e3a, #ffd700, #2a5298);
-            width: 0%;
-            transition: width 1s ease-in-out;
-            border-radius: 12px;
-        }
-
-        .scrooge-avatar {
+        .ghost-status {
             text-align: center;
-            font-size: 4em;
-            margin: 15px 0;
+            position: relative;
+        }
+
+        .ghost-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            opacity: 0.3;
             transition: all 0.5s ease;
+            display: block;
+        }
+
+        .ghost-icon.complete {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .ghost-label {
+            font-size: 0.9em;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .key-collected {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 1.5em;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .key-collected.show {
+            opacity: 1;
+            animation: keyBounce 0.5s ease;
+        }
+
+        @keyframes keyBounce {
+            0%, 20%, 60%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            80% { transform: translateY(-5px); }
         }
 
         .game-screen {
@@ -101,66 +146,269 @@
             display: block;
         }
 
-        .scene-image {
-            width: 100%;
-            max-width: 400px;
-            height: 250px;
-            background: linear-gradient(135deg, #2a5298, #c41e3a);
-            border-radius: 15px;
-            margin: 0 auto 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5em;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        .puzzle-header {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
-        .story-text {
-            font-size: 1.2em;
-            line-height: 1.6;
-            margin-bottom: 25px;
-            color: #333;
+        .ghost-title {
+            background: linear-gradient(135deg, #2a5298, #c41e3a);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.3em;
+            margin-bottom: 15px;
+        }
+
+        .puzzle-instruction {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 10px;
             border-left: 5px solid #ffd700;
+            margin-bottom: 25px;
+            font-size: 1.1em;
         }
 
-        .choices-container {
+        /* Puzzle Styles */
+        .puzzle-area {
+            min-height: 300px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #2a5298;
+        }
+
+        .jigsaw-container {
             display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 15px;
-            margin-top: 20px;
+            margin-bottom: 20px;
         }
 
-        .choice-btn {
-            background: linear-gradient(135deg, #2a5298, #c41e3a);
+        .puzzle-piece {
+            aspect-ratio: 1;
+            background: linear-gradient(135deg, #ffd700, #ffeb3b);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            user-select: none;
+        }
+
+        .puzzle-piece:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .puzzle-piece.selected {
+            border-color: #c41e3a;
+            transform: scale(1.1);
+        }
+
+        .puzzle-piece.correct {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            pointer-events: none;
+        }
+
+        .drop-zone {
+            min-height: 100px;
+            border: 2px dashed #2a5298;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            background: #fff;
+        }
+
+        .drop-zone.highlight {
+            border-color: #28a745;
+            background: #e8f5e8;
+        }
+
+        .drop-zone.filled {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            font-weight: bold;
+        }
+
+        .timeline-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .timeline-card {
+            background: #ffd700;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            max-width: 200px;
+            text-align: center;
+            font-size: 0.9em;
+        }
+
+        .timeline-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .timeline-card.selected {
+            border-color: #c41e3a;
+            transform: scale(1.05);
+        }
+
+        .sharing-game {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .family-member {
+            background: #fff;
+            border: 2px solid #2a5298;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .food-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .food-item {
+            background: #ffd700;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.5em;
+            user-select: none;
+        }
+
+        .food-item:hover {
+            transform: scale(1.1);
+        }
+
+        .food-item.placed {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        .lock-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .combination-lock {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .key-slot {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #2a5298;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .key-slot.filled {
+            background: linear-gradient(135deg, #ffd700, #ffeb3b);
+            border-color: #28a745;
+            transform: scale(1.1);
+        }
+
+        .available-keys {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .draggable-key {
+            font-size: 2em;
+            padding: 10px;
+            background: #ffd700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .draggable-key:hover {
+            transform: scale(1.1);
+        }
+
+        .draggable-key.used {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #2a5298, #28a745);
             color: white;
             border: none;
-            padding: 20px;
-            border-radius: 12px;
+            padding: 15px 30px;
+            border-radius: 10px;
             font-size: 1.1em;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
 
-        .choice-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        .action-btn:disabled {
+            opacity: 0.5;
+            pointer-events: none;
         }
 
-        .choice-btn.good {
-            background: linear-gradient(135deg, #2a5298, #28a745);
-            color: white !important;
+        .success-message {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
         }
 
-        .choice-btn.neutral {
-            background: linear-gradient(135deg, #333, #666);
-        }
-
-        .choice-btn.bad {
-            background: linear-gradient(135deg, #c41e3a, #8b0000);
+        .educational-note {
+            background: #e8f4f8;
+            border: 2px solid #2a5298;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-style: italic;
+            color: #2a5298;
         }
 
         .start-screen {
@@ -185,90 +433,43 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .educational-note {
-            background: #e8f4f8;
-            border: 2px solid #2a5298;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            font-style: italic;
-            color: #2a5298;
-        }
-
-        .theme-box {
-            background: #fff3cd;
-            border: 2px solid #ffd700;
-            border-radius: 10px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .theme-title {
-            color: #c41e3a;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .ghost-indicator {
-            display: inline-block;
-            padding: 8px 15px;
-            background: #2a5298;
-            color: white;
-            border-radius: 20px;
-            font-size: 0.9em;
-            margin-bottom: 15px;
-        }
-
-        .score-display {
+        .celebration-screen {
             text-align: center;
-            font-size: 1.1em;
-            margin: 15px 0;
-        }
-
-        .final-screen {
-            text-align: center;
-        }
-
-        .final-message {
-            font-size: 1.3em;
-            margin: 20px 0;
             padding: 20px;
-            border-radius: 10px;
         }
 
-        .excellent {
-            background: linear-gradient(135deg, #d4edda, #c3e6cb);
-            border: 2px solid #28a745;
-            color: #155724;
+        .scrooge-transformation {
+            font-size: 5em;
+            margin: 20px 0;
+            animation: transform 2s ease-in-out;
         }
 
-        .good {
-            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
-            border: 2px solid #ffc107;
-            color: #856404;
+        @keyframes transform {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1); }
         }
 
-        .needs-work {
-            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
-            border: 2px solid #dc3545;
-            color: #721c24;
+        .snow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
         }
 
-        .restart-btn {
-            background: linear-gradient(135deg, #28a745, #20c997);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 20px 10px;
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            animation: snow-fall linear infinite;
+            user-select: none;
         }
 
-        .restart-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        @keyframes snow-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); }
+            100% { transform: translateY(100vh) rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -280,324 +481,816 @@
                 font-size: 2em;
             }
             
-            .scene-image {
-                height: 200px;
-                font-size: 4em;
+            .progress-container {
+                flex-wrap: wrap;
+                gap: 15px;
             }
             
-            .story-text {
-                font-size: 1.1em;
-                padding: 15px;
+            .sharing-game {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
             
-            .choice-btn {
-                padding: 15px;
-                font-size: 1em;
+            .combination-lock {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .key-slot {
+                width: 60px;
+                height: 60px;
+                font-size: 2em;
+            }
+
+            .restart-fixed {
+                top: 15px;
+                right: 15px;
+                padding: 8px 12px;
+                font-size: 0.8em;
             }
         }
     </style>
 </head>
 <body>
     <div class="game-container">
+        <button class="restart-fixed" onclick="restartGame()">🔄 Restart</button>
+        
         <div class="header">
             <div class="school-logo">🏫 Archbishop Ilsley Catholic School</div>
-            <h1>🎄 Scrooge's Redemption Journey</h1>
-            <div class="subtitle">An Interactive Christmas Carol Adventure</div>
+            <h1>🗝️ Christmas Carol Escape Room</h1>
+            <div class="subtitle">Help the Three Spirits Save Scrooge's Soul</div>
         </div>
 
         <div class="progress-container">
-            <div class="score-display">
-                <strong>Redemption Progress:</strong> <span id="score">0</span>/100
+            <div class="ghost-status">
+                <div class="ghost-icon" id="pastGhost">👻</div>
+                <div class="ghost-label">Christmas Past</div>
+                <div class="key-collected" id="pastKey">🗝️</div>
             </div>
-            <div class="transformation-meter">
-                <div class="transformation-fill" id="progressBar"></div>
+            <div class="ghost-status">
+                <div class="ghost-icon" id="presentGhost">🎅</div>
+                <div class="ghost-label">Christmas Present</div>
+                <div class="key-collected" id="presentKey">🎁</div>
             </div>
-            <div class="scrooge-avatar" id="scroogeAvatar">😠</div>
+            <div class="ghost-status">
+                <div class="ghost-icon" id="futureGhost">⚰️</div>
+                <div class="ghost-label">Christmas Future</div>
+                <div class="key-collected" id="futureKey">🔮</div>
+            </div>
         </div>
 
         <!-- Start Screen -->
         <div class="game-screen active" id="startScreen">
             <div class="start-screen">
-                <div class="scene-image">🏠</div>
-                <div class="story-text">
-                    Welcome to Victorian London, where you'll experience Ebenezer Scrooge's incredible journey of transformation. Through your choices, you'll learn about redemption, compassion, and the true spirit of Christmas.
+                <div class="puzzle-instruction">
+                    🚨 <strong>Emergency at Scrooge's House!</strong> 🚨<br><br>
+                    The three Christmas Spirits have lost their power and can't reach Scrooge's heart! 
+                    You must help each spirit complete their mission by solving puzzles. 
+                    Only then can Scrooge be saved from his terrible fate.
                 </div>
                 
                 <div class="educational-note">
                     <strong>How to Play:</strong><br>
-                    • Read each scene from Dickens' famous story<br>
-                    • Choose how Scrooge should respond at key moments<br>
-                    • Watch your Redemption Progress bar fill up based on your choices<br>
-                    • See Scrooge transform from 😠 to 🎅 as you make kinder decisions<br>
-                    • Discover different endings depending on your choices!
+                    • Solve puzzles to help each of the three Christmas Spirits<br>
+                    • Earn keys by completing each spirit's challenge<br>
+                    • Use all three keys to unlock Scrooge's redemption<br>
+                    • Learn about Dickens' themes through interactive problem-solving!
                 </div>
 
                 <div class="educational-note">
-                    <strong>Educational Focus:</strong> Character development, Victorian social issues, themes of redemption and social responsibility in Dickens' masterpiece.
+                    <strong>Educational Focus:</strong> Character development, cause-and-effect, Victorian social issues, and the power of redemption in Dickens' masterpiece.
                 </div>
-                <button class="start-btn" onclick="startGame()">Begin Your Journey</button>
-                <button class="restart-btn" onclick="restartGame()" style="margin-top: 10px;">Restart Game</button>
+                <button class="start-btn" onclick="startGame()">🎯 Enter the Escape Room</button>
             </div>
         </div>
 
-        <!-- Game Screens -->
-        <div class="game-screen" id="screen1">
-            <div class="ghost-indicator">👻 Before the Spirits</div>
-            <div class="scene-image">💰</div>
-            <div class="story-text">
-                Christmas Eve in your counting house. Bob Cratchit shivers in the cold while you count coins. Your nephew Fred arrives, cheerfully wishing you "Merry Christmas!" and inviting you to dinner. Two gentlemen also enter, asking for charity donations for the poor.
+        <!-- Ghost of Christmas Past -->
+        <div class="game-screen" id="pastScreen">
+            <div class="puzzle-header">
+                <div class="ghost-title">👻 Ghost of Christmas Past - Memory Chamber</div>
+                <div class="puzzle-instruction">
+                    The Ghost of Christmas Past has lost pieces of Scrooge's memories! 
+                    Help reconstruct his life story by putting these key moments in chronological order.
+                </div>
             </div>
-            <div class="theme-box">
-                <div class="theme-title">Key Theme: Social Responsibility</div>
-                How does Scrooge initially respond to requests for kindness and charity?
+
+            <div class="timeline-container" id="timelineCards">
+                <div class="timeline-card" data-order="1">📚 Young Scrooge alone at school during Christmas</div>
+                <div class="timeline-card" data-order="2">🎉 Happy times as apprentice with kind Mr Fezziwig</div>
+                <div class="timeline-card" data-order="3">💍 Belle agrees to marry young, hopeful Scrooge</div>
+                <div class="timeline-card" data-order="4">💰 Scrooge becomes obsessed with making money</div>
+                <div class="timeline-card" data-order="5">💔 Belle leaves him: "Another idol has displaced me"</div>
+                <div class="timeline-card" data-order="6">🏠 Scrooge becomes a lonely, bitter miser</div>
             </div>
-            <div class="choices-container">
-                <button class="choice-btn bad" onclick="makeChoice(1, 0)">
-                    "Bah! Humbug! Keep your Christmas to yourself!" Refuse all requests coldly.
-                </button>
-                <button class="choice-btn neutral" onclick="makeChoice(1, 10)">
-                    Give Fred a half-hearted response but remain generally dismissive.
-                </button>
-                <button class="choice-btn good" onclick="makeChoice(1, 25)">
-                    Show some curiosity about Fred's invitation, though still reluctant.
-                </button>
+
+            <div class="puzzle-area">
+                <h3 style="text-align: center; margin-bottom: 20px;">Arrange Scrooge's Life Story (Click in Order):</h3>
+                <div id="timelineResult" style="min-height: 100px; text-align: center; font-size: 1.1em;"></div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="action-btn" onclick="resetTimeline()">🔄 Reset Timeline</button>
+                <button class="action-btn" id="checkTimelineBtn" onclick="checkTimeline()" disabled>✅ Check Order</button>
             </div>
         </div>
 
-        <div class="game-screen" id="screen2">
-            <div class="ghost-indicator">👻 Ghost of Christmas Past</div>
-            <div class="scene-image">🕰️</div>
-            <div class="story-text">
-                The Ghost of Christmas Past shows you scenes from your youth - your lonely school days, your joyful apprenticeship with old Fezziwig, and the painful moment Belle left you because money became more important than love.
+        <!-- Ghost of Christmas Present -->
+        <div class="game-screen" id="presentScreen">
+            <div class="puzzle-header">
+                <div class="ghost-title">🎅 Ghost of Christmas Present - Sharing Challenge</div>
+                <div class="puzzle-instruction">
+                    The Ghost of Christmas Present's magic is fading! Help the Cratchit family share their Christmas meal fairly. 
+                    Drag food items to each family member - everyone must get something!
+                </div>
             </div>
-            <div class="theme-box">
-                <div class="theme-title">Key Theme: Lost Innocence & Choices</div>
-                How does seeing your past affect you?
+
+            <div class="sharing-game">
+                <div>
+                    <h3 style="text-align: center; margin-bottom: 20px;">Available Food:</h3>
+                    <div class="food-items" id="availableFood">
+                        <div class="food-item" draggable="true" data-food="turkey">🦃</div>
+                        <div class="food-item" draggable="true" data-food="potato">🥔</div>
+                        <div class="food-item" draggable="true" data-food="bread">🍞</div>
+                        <div class="food-item" draggable="true" data-food="apple">🍎</div>
+                        <div class="food-item" draggable="true" data-food="cake">🍰</div>
+                        <div class="food-item" draggable="true" data-food="pie">🥧</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="text-align: center; margin-bottom: 20px;">The Cratchit Family:</h3>
+                    <div class="family-member" id="bobCratchit" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        👨 <strong>Bob Cratchit</strong> (Father)<br>
+                        <div class="drop-zone" data-member="bob">Drop food here</div>
+                    </div>
+                    <div class="family-member" id="mrscratchit" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        👩 <strong>Mrs Cratchit</strong> (Mother)<br>
+                        <div class="drop-zone" data-member="mrs">Drop food here</div>
+                    </div>
+                    <div class="family-member" id="tinyTim" ondrop="drop(event)" ondragover="allowDrop(event)">
+                        👦 <strong>Tiny Tim</strong> (Youngest)<br>
+                        <div class="drop-zone" data-member="tim">Drop food here</div>
+                    </div>
+                </div>
             </div>
-            <div class="choices-container">
-                <button class="choice-btn bad" onclick="makeChoice(2, 0)">
-                    "These are shadows of the past! They have no power over me now!"
-                </button>
-                <button class="choice-btn neutral" onclick="makeChoice(2, 15)">
-                    Feel uncomfortable but try to dismiss the emotions these memories bring.
-                </button>
-                <button class="choice-btn good" onclick="makeChoice(2, 30)">
-                    Feel genuine sorrow for the choices you made and the happiness you lost.
-                </button>
+
+            <div style="text-align: center;">
+                <button class="action-btn" onclick="resetSharing()">🔄 Reset Meal</button>
+                <button class="action-btn" id="checkSharingBtn" onclick="checkSharing()" disabled>✅ Check Sharing</button>
             </div>
         </div>
 
-        <div class="game-screen" id="screen3">
-            <div class="ghost-indicator">👻 Ghost of Christmas Present</div>
-            <div class="scene-image">🍗</div>
-            <div class="story-text">
-                The jolly Ghost of Christmas Present shows you Bob Cratchit's humble but loving Christmas dinner. Despite their poverty, the Cratchit family is full of joy and gratitude. You see Tiny Tim's brave spirit despite his illness, and learn he may not survive another year.
+        <!-- Ghost of Christmas Future -->
+        <div class="game-screen" id="futureScreen">
+            <div class="puzzle-header">
+                <div class="ghost-title">⚰️ Ghost of Christmas Yet to Come - Future Prevention</div>
+                <div class="puzzle-instruction">
+                    The Ghost of Christmas Yet to Come shows a terrible future! 
+                    Match each of Scrooge's current bad actions with what they lead to in the future.
+                </div>
             </div>
-            <div class="theme-box">
-                <div class="theme-title">Key Theme: Compassion & Family</div>
-                How do you respond to seeing the Cratchit family's struggles?
+
+            <div class="puzzle-area">
+                <h3 style="text-align: center; margin-bottom: 20px;">Connect Actions to Consequences:</h3>
+                <div id="consequenceGame">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0;">
+                        <div>
+                            <h4 style="color: #c41e3a; margin-bottom: 15px;">Current Bad Actions:</h4>
+                            <div class="timeline-card consequence-action" data-action="charity" style="margin: 10px 0;">
+                                Refuses to give money to charity
+                            </div>
+                            <div class="timeline-card consequence-action" data-action="salary" style="margin: 10px 0;">
+                                Pays Bob Cratchit very little
+                            </div>
+                            <div class="timeline-card consequence-action" data-action="cold" style="margin: 10px 0;">
+                                Won't pay for office heating
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: #2a5298; margin-bottom: 15px;">Future Consequences:</h4>
+                            <div class="drop-zone consequence-result" data-result="charity" style="margin: 10px 0;">
+                                Dies unmourned - nobody cares
+                            </div>
+                            <div class="drop-zone consequence-result" data-result="salary" style="margin: 10px 0;">
+                                Tiny Tim dies from illness
+                            </div>
+                            <div class="drop-zone consequence-result" data-result="cold" style="margin: 10px 0;">
+                                Bob Cratchit becomes sick
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="choices-container">
-                <button class="choice-btn bad" onclick="makeChoice(3, 5)">
-                    "If they can't afford to live properly, perhaps they should reduce their surplus population."
-                </button>
-                <button class="choice-btn neutral" onclick="makeChoice(3, 20)">
-                    Feel slightly troubled but still maintain your distance emotionally.
-                </button>
-                <button class="choice-btn good" onclick="makeChoice(3, 35)">
-                    Feel deep remorse for your treatment of Bob and genuine concern for Tiny Tim.
-                </button>
+
+            <div style="text-align: center;">
+                <button class="action-btn" onclick="resetConsequences()">🔄 Reset Connections</button>
+                <button class="action-btn" id="checkConsequencesBtn" onclick="checkConsequences()" disabled>✅ Check Connections</button>
             </div>
         </div>
 
-        <div class="game-screen" id="screen4">
-            <div class="ghost-indicator">👻 Ghost of Christmas Yet to Come</div>
-            <div class="scene-image">⚰️</div>
-            <div class="story-text">
-                The silent, terrifying Ghost of Christmas Yet to Come shows you a future where you die alone and unmourned. People steal from your corpse, business associates speak carelessly of your death, and you see Tiny Tim's empty chair - he didn't survive.
-            </div>
-            <div class="theme-box">
-                <div class="theme-title">Key Theme: Consequences & Mortality</div>
-                Faced with this terrible future, how do you respond?
-            </div>
-            <div class="choices-container">
-                <button class="choice-btn bad" onclick="makeChoice(4, 0)">
-                    "These are merely shadows of what may be, not what must be!"
-                </button>
-                <button class="choice-btn neutral" onclick="makeChoice(4, 15)">
-                    Feel fear but struggle to fully accept responsibility for this future.
-                </button>
-                <button class="choice-btn good" onclick="makeChoice(4, 40)">
-                    "Spirit, I will honor Christmas in my heart and try to keep it all the year!"
-                </button>
+        <!-- Final Lock Screen -->
+        <div class="game-screen" id="lockScreen">
+            <div class="lock-container">
+                <div class="ghost-title">🔓 The Redemption Lock</div>
+                <div class="puzzle-instruction">
+                    Excellent work! You've helped all three spirits and earned their keys. 
+                    Now place the keys in the correct order to unlock Scrooge's heart: Past → Present → Future
+                </div>
+
+                <div class="combination-lock">
+                    <div class="key-slot" id="slot1" data-slot="past" onclick="selectSlot('slot1')">
+                        <div style="font-size: 0.4em; color: #666;">PAST</div>
+                    </div>
+                    <div class="key-slot" id="slot2" data-slot="present" onclick="selectSlot('slot2')">
+                        <div style="font-size: 0.4em; color: #666;">PRESENT</div>
+                    </div>
+                    <div class="key-slot" id="slot3" data-slot="future" onclick="selectSlot('slot3')">
+                        <div style="font-size: 0.4em; color: #666;">FUTURE</div>
+                    </div>
+                </div>
+
+                <div class="available-keys">
+                    <div class="draggable-key" id="keyPast" data-key="past" onclick="placeKey('past')">🗝️</div>
+                    <div class="draggable-key" id="keyPresent" data-key="present" onclick="placeKey('present')">🎁</div>
+                    <div class="draggable-key" id="keyFuture" data-key="future" onclick="placeKey('future')">🔮</div>
+                </div>
+
+                <div style="margin: 30px 0;">
+                    <button class="action-btn" onclick="resetLock()">🔄 Reset Lock</button>
+                    <button class="action-btn" id="unlockBtn" onclick="unlockRedemption()" disabled>🔓 Unlock Redemption!</button>
+                </div>
             </div>
         </div>
 
-        <div class="game-screen" id="screen5">
-            <div class="ghost-indicator">🌅 Christmas Morning</div>
-            <div class="scene-image">🎄</div>
-            <div class="story-text">
-                You wake on Christmas morning, grateful to be alive and given a second chance! A boy tells you it's still Christmas Day - the spirits did their work in one night. You have the opportunity to make amends and change your ways.
-            </div>
-            <div class="theme-box">
-                <div class="theme-title">Key Theme: Redemption & Action</div>
-                How do you use this second chance?
-            </div>
-            <div class="choices-container">
-                <button class="choice-btn bad" onclick="makeChoice(5, 5)">
-                    Make minimal changes but generally return to your old ways.
-                </button>
-                <button class="choice-btn neutral" onclick="makeChoice(5, 20)">
-                    Make some improvements but struggle to fully transform.
-                </button>
-                <button class="choice-btn good" onclick="makeChoice(5, 30)">
-                    Embrace complete transformation - send the Cratchits a turkey, raise Bob's salary, donate to charity, and accept Fred's invitation!
-                </button>
-            </div>
-        </div>
+        <!-- Success Screen -->
+        <div class="game-screen" id="successScreen">
+            <div class="celebration-screen">
+                <div class="snow" id="snowContainer"></div>
+                <div class="ghost-title">🎄 Scrooge is Saved! 🎄</div>
+                
+                <div class="scrooge-transformation">😠 → 😐 → 🙂 → 😊 → 🎅</div>
+                
+                <div class="success-message">
+                    Magnificent work! You've helped the three spirits complete their missions and saved Scrooge's soul. 
+                    Through your problem-solving, you've learned how past experiences, present actions, and future consequences 
+                    are all connected in Dickens' masterpiece.
+                </div>
 
-        <!-- Final Screen -->
-        <div class="game-screen" id="finalScreen">
-            <div class="final-screen">
-                <div class="scene-image" id="finalEmoji">🎄</div>
-                <div class="final-message" id="finalMessage"></div>
                 <div class="educational-note">
-                    <strong>What you've learned:</strong> Through your choices, you've explored Dickens' themes of social responsibility, the power of redemption, and how personal transformation can impact entire communities. A Christmas Carol remains relevant today as it shows how individual change can create positive social impact.
+                    <strong>What You've Discovered:</strong><br>
+                    • <strong>Past:</strong> Our experiences shape who we become, but they don't define our future<br>
+                    • <strong>Present:</strong> Small acts of kindness and sharing create joy for everyone<br>
+                    • <strong>Future:</strong> Our current choices determine what tomorrow will bring<br><br>
+                    Dickens wrote A Christmas Carol to show that redemption is always possible - no matter how lost someone seems, 
+                    they can change through understanding their past, embracing compassion in the present, and taking responsibility for their future.
                 </div>
-                <button class="restart-btn" onclick="restartGame()">Play Again</button>
-                <button class="restart-btn" onclick="showSummary()">Learning Summary</button>
+
+                <div style="margin-top: 30px;">
+                    <button class="action-btn" onclick="restartGame()">🎯 Play Again</button>
+                    <button class="action-btn" onclick="showLearningObjectives()">📚 Learning Summary</button>
+                </div>
             </div>
         </div>
 
-        <!-- Summary Screen -->
-        <div class="game-screen" id="summaryScreen">
-            <h2 style="color: #c41e3a; text-align: center; margin-bottom: 20px;">📚 A Christmas Carol - Key Themes</h2>
+        <!-- Learning Summary -->
+        <div class="game-screen" id="learningScreen">
+            <div class="ghost-title">📚 A Christmas Carol - Learning Objectives Achieved</div>
             
-            <div class="theme-box">
-                <div class="theme-title">🔄 Redemption</div>
-                Dickens shows that people can change, no matter how set in their ways. Scrooge's transformation demonstrates the power of self-reflection and choice.
+            <div style="display: grid; gap: 20px; margin: 20px 0;">
+                <div class="educational-note">
+                    <strong>🔍 Character Analysis Skills:</strong><br>
+                    By reconstructing Scrooge's timeline, you've practised identifying key character development moments and understanding cause-and-effect in literature.
+                </div>
+
+                <div class="educational-note">
+                    <strong>🤝 Social Responsibility Themes:</strong><br>
+                    The sharing game demonstrated Victorian poverty and how small acts of kindness can impact entire families - a key message in Dickens' social criticism.
+                </div>
+
+                <div class="educational-note">
+                    <strong>📈 Consequence Recognition:</strong><br>
+                    Connecting actions to outcomes helps understand how Dickens structured his moral argument about personal responsibility and social change.
+                </div>
+
+                <div class="educational-note">
+                    <strong>🎭 Victorian Context:</strong><br>
+                    Through the puzzles, you've explored the real social conditions Dickens was writing about - workhouses, poor wages, and class divisions.
+                </div>
+
+                <div class="educational-note">
+                    <strong>📖 Literary Techniques:</strong><br>
+                    You've experienced Dickens' use of symbolism (the three spirits), moral allegory, and narrative structure in an interactive way.
+                </div>
             </div>
 
-            <div class="theme-box">
-                <div class="theme-title">🤝 Social Responsibility</div>
-                The story criticizes Victorian society's treatment of the poor and emphasizes our duty to care for one another, especially the vulnerable.
+            <div class="success-message">
+                These skills transfer directly to GCSE English Literature analysis, essay writing, and understanding how classic texts remain relevant to modern social issues.
             </div>
 
-            <div class="theme-box">
-                <div class="theme-title">👨‍👩‍👧‍👦 Family and Community</div>
-                The Cratchit family's love despite poverty contrasts with Scrooge's lonely wealth, showing that relationships matter more than money.
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="action-btn" onclick="restartGame()">🎯 Play Again</button>
             </div>
-
-            <div class="theme-box">
-                <div class="theme-title">⏰ Time and Memory</div>
-                The three spirits representing past, present, and future show how our choices connect across time and impact our destiny.
-            </div>
-
-            <div class="educational-note">
-                <strong>Why study Dickens today?</strong> His themes of social justice, personal responsibility, and the power of compassion remain deeply relevant in our modern world.
-            </div>
-
-            <button class="restart-btn" onclick="restartGame()">Play Again</button>
         </div>
     </div>
 
     <script>
-        let currentScreen = 0;
-        let score = 0;
-        const maxScore = 120;
+        // Game State
+        let gameState = {
+            currentScreen: 'startScreen',
+            completedChallenges: {
+                past: false,
+                present: false,
+                future: false
+            },
+            timelineOrder: [],
+            selectedSlot: null,
+            lockState: {
+                past: false,
+                present: false,
+                future: false
+            }
+        };
 
-        const scroogeEmojis = ['😠', '😐', '🙂', '😊', '🎅'];
-        const screens = ['startScreen', 'screen1', 'screen2', 'screen3', 'screen4', 'screen5', 'finalScreen'];
+        // Timeline puzzle data
+        const timelineCards = document.querySelectorAll('.timeline-card');
+        const timelineResult = document.getElementById('timelineResult');
+        let selectedCards = [];
 
-        function updateProgress() {
-            const percentage = Math.min((score / maxScore) * 100, 100);
-            document.getElementById('progressBar').style.width = percentage + '%';
-            document.getElementById('score').textContent = score;
-            
-            // Update Scrooge avatar based on progress
-            let emojiIndex = Math.floor(percentage / 25);
-            if (emojiIndex >= scroogeEmojis.length) emojiIndex = scroogeEmojis.length - 1;
-            document.getElementById('scroogeAvatar').textContent = scroogeEmojis[emojiIndex];
-        }
+        // Sharing game data
+        let sharingState = {
+            bob: null,
+            mrs: null,
+            tim: null
+        };
 
+        // Consequence game data
+        let consequenceConnections = {};
+
+        // Initialize game
         function startGame() {
-            currentScreen = 1;
-            score = 0;
-            updateProgress();
-            showScreen('screen1');
+            showScreen('pastScreen');
+            initializeTimeline();
         }
 
         function showScreen(screenId) {
-            // Hide all screens
             document.querySelectorAll('.game-screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            
-            // Show target screen
             document.getElementById(screenId).classList.add('active');
-        }
-
-        function makeChoice(screenNumber, points) {
-            score += points;
-            updateProgress();
-            
-            // Add a small delay for visual feedback
-            setTimeout(() => {
-                if (screenNumber < 5) {
-                    currentScreen = screenNumber + 1;
-                    showScreen('screen' + currentScreen);
-                } else {
-                    showFinalScreen();
-                }
-            }, 1000);
-        }
-
-        function showFinalScreen() {
-            showScreen('finalScreen');
-            
-            const finalMessage = document.getElementById('finalMessage');
-            const finalEmoji = document.getElementById('finalEmoji');
-            
-            if (score >= 100) {
-                finalMessage.className = 'final-message excellent';
-                finalMessage.innerHTML = `
-                    <h2>🎄 Complete Redemption! 🎄</h2>
-                    <p>Score: ${score}/${maxScore}</p>
-                    <p>Like Dickens' Scrooge, you've chosen the path of complete transformation! You understand that true change comes from recognising past mistakes, feeling genuine empathy for others, and taking concrete action to help those in need. Your choices show you've grasped the novel's central message about the power of redemption and social responsibility.</p>
-                `;
-                finalEmoji.textContent = '🎅';
-            } else if (score >= 60) {
-                finalMessage.className = 'final-message good';
-                finalMessage.innerHTML = `
-                    <h2>📈 Good Progress!</h2>
-                    <p>Score: ${score}/${maxScore}</p>
-                    <p>You've made meaningful steps toward redemption, showing you understand many of Dickens' key themes. While not achieving complete transformation like Scrooge, you've demonstrated growth in empathy and social awareness. Consider how even small acts of kindness can have profound impacts on others.</p>
-                `;
-                finalEmoji.textContent = '🙂';
-            } else {
-                finalMessage.className = 'final-message needs-work';
-                finalMessage.innerHTML = `
-                    <h2>🤔 Room for Growth</h2>
-                    <p>Score: ${score}/${maxScore}</p>
-                    <p>Your journey shows there's still much to learn about compassion and redemption. Dickens wrote A Christmas Carol to show that even the hardest hearts can change. Consider how Scrooge's transformation came from truly seeing the impact of his choices on others. Try again and explore the power of empathy!</p>
-                `;
-                finalEmoji.textContent = '😐';
-            }
+            gameState.currentScreen = screenId;
         }
 
         function restartGame() {
-            currentScreen = 0;
-            score = 0;
-            updateProgress();
+            // Reset all game state
+            gameState = {
+                currentScreen: 'startScreen',
+                completedChallenges: {
+                    past: false,
+                    present: false,
+                    future: false
+                },
+                timelineOrder: [],
+                selectedSlot: null,
+                lockState: {
+                    past: false,
+                    present: false,
+                    future: false
+                }
+            };
+            
+            selectedCards = [];
+            sharingState = { bob: null, mrs: null, tim: null };
+            consequenceConnections = {};
+            
+            // Reset visual elements
+            resetTimeline();
+            resetSharing();
+            resetConsequences();
+            resetLock();
+            
+            // Remove any continue buttons that were added
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                if (btn.textContent.includes('Continue') || btn.textContent.includes('Go to Final')) {
+                    btn.remove();
+                }
+            });
+            
+            // Reset ghost status
+            document.querySelectorAll('.ghost-icon').forEach(icon => {
+                icon.classList.remove('complete');
+            });
+            document.querySelectorAll('.key-collected').forEach(key => {
+                key.classList.remove('show');
+            });
+            
             showScreen('startScreen');
         }
 
-        function showSummary() {
-            showScreen('summaryScreen');
+        // TIMELINE PUZZLE (Christmas Past)
+        function initializeTimeline() {
+            timelineCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    selectTimelineCard(this);
+                });
+            });
         }
 
-        // Initialize the game
-        updateProgress();
+        function selectTimelineCard(card) {
+            if (card.classList.contains('correct') || card.classList.contains('selected')) return;
+            
+            console.log('Selecting card:', card.textContent.substring(0, 30) + '...', 'Order:', card.dataset.order);
+            
+            card.classList.add('selected');
+            selectedCards.push(card);
+            
+            const order = selectedCards.length;
+            const text = card.textContent;
+            
+            timelineResult.innerHTML += `<div style="margin: 5px 0; padding: 10px; background: #e3f2fd; border-radius: 5px; border-left: 4px solid #2a5298;">
+                <strong>Step ${order}:</strong> ${text}
+            </div>`;
+            
+            card.style.opacity = '0.7';
+            card.style.pointerEvents = 'none';
+            
+            console.log('Selected cards so far:', selectedCards.length);
+            
+            const checkBtn = document.getElementById('checkTimelineBtn');
+            if (selectedCards.length >= 6) {
+                checkBtn.disabled = false;
+                checkBtn.style.background = 'linear-gradient(135deg, #28a745, #20c997)';
+                console.log('Check button enabled');
+            }
+        }
+
+        function resetTimeline() {
+            console.log('Resetting timeline');
+            selectedCards = [];
+            timelineResult.innerHTML = '<p style="color: #666; text-align: center; font-style: italic;">Click cards in chronological order...</p>';
+            
+            timelineCards.forEach(card => {
+                card.classList.remove('selected', 'correct');
+                card.style.opacity = '1';
+                card.style.pointerEvents = 'auto';
+            });
+            
+            const checkBtn = document.getElementById('checkTimelineBtn');
+            checkBtn.disabled = true;
+            checkBtn.style.background = 'linear-gradient(135deg, #2a5298, #28a745)';
+        }
+
+        function checkTimeline() {
+            console.log('Checking timeline...'); // Debug
+            console.log('Selected cards:', selectedCards.map(card => ({
+                text: card.textContent.substring(0, 30) + '...',
+                order: card.dataset.order
+            })));
+            
+            let correct = true;
+            selectedCards.forEach((card, index) => {
+                const expectedOrder = parseInt(card.dataset.order);
+                const actualPosition = index + 1;
+                console.log(`Card ${actualPosition}: expected order ${expectedOrder}, actual position ${actualPosition}`);
+                if (expectedOrder !== actualPosition) {
+                    correct = false;
+                }
+            });
+            
+            console.log('Timeline correct:', correct);
+            
+            if (correct) {
+                selectedCards.forEach(card => {
+                    card.classList.add('correct');
+                });
+                
+                const successMsg = document.createElement('div');
+                successMsg.className = 'success-message';
+                successMsg.style.margin = '20px 0';
+                successMsg.innerHTML = '🎉 Perfect! You\'ve reconstructed Scrooge\'s life story correctly!';
+                timelineResult.appendChild(successMsg);
+                
+                setTimeout(() => {
+                    completePastChallenge();
+                }, 2000);
+            } else {
+                alert('Not quite right! Remember the chronological order:\n1. Lonely school days\n2. Happy apprentice times\n3. Engagement to Belle\n4. Obsession with money\n5. Belle leaves him\n6. Becomes a miser\n\nTry again!');
+                resetTimeline();
+            }
+        }
+
+        function completePastChallenge() {
+            gameState.completedChallenges.past = true;
+            document.getElementById('pastGhost').classList.add('complete');
+            document.getElementById('pastKey').classList.add('show');
+            
+            // Add continue button
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'action-btn';
+            continueBtn.innerHTML = '➡️ Continue to Christmas Present';
+            continueBtn.style.fontSize = '1.2em';
+            continueBtn.style.margin = '20px auto';
+            continueBtn.style.display = 'block';
+            continueBtn.onclick = () => {
+                showScreen('presentScreen');
+                initializeSharing();
+            };
+            
+            document.getElementById('pastScreen').appendChild(continueBtn);
+        }
+
+        // SHARING GAME (Christmas Present)
+        function initializeSharing() {
+            const foodItems = document.querySelectorAll('.food-item');
+            
+            foodItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', this.dataset.food);
+                    e.dataTransfer.setData('text/html', this.outerHTML);
+                });
+            });
+        }
+
+        function allowDrop(e) {
+            e.preventDefault();
+            e.currentTarget.querySelector('.drop-zone').classList.add('highlight');
+        }
+
+        function drop(e) {
+            e.preventDefault();
+            const dropZone = e.currentTarget.querySelector('.drop-zone');
+            dropZone.classList.remove('highlight');
+            
+            if (dropZone.classList.contains('filled')) return;
+            
+            const foodType = e.dataTransfer.getData('text/plain');
+            const member = dropZone.dataset.member;
+            
+            sharingState[member] = foodType;
+            
+            const foodEmoji = {
+                'turkey': '🦃',
+                'potato': '🥔', 
+                'bread': '🍞',
+                'apple': '🍎',
+                'cake': '🍰',
+                'pie': '🥧'
+            };
+            
+            dropZone.textContent = foodEmoji[foodType];
+            dropZone.classList.add('filled');
+            
+            // Mark original food item as placed
+            const originalFood = document.querySelector(`[data-food="${foodType}"]`);
+            originalFood.classList.add('placed');
+            
+            // Check if all family members have food
+            const allFed = Object.values(sharingState).every(food => food !== null);
+            document.getElementById('checkSharingBtn').disabled = !allFed;
+        }
+
+        function resetSharing() {
+            sharingState = { bob: null, mrs: null, tim: null };
+            
+            document.querySelectorAll('.drop-zone').forEach(zone => {
+                zone.textContent = 'Drop food here';
+                zone.classList.remove('filled', 'highlight');
+            });
+            
+            document.querySelectorAll('.food-item').forEach(item => {
+                item.classList.remove('placed');
+            });
+            
+            document.getElementById('checkSharingBtn').disabled = true;
+        }
+
+        function checkSharing() {
+            // Everyone has food - that's what matters for the spirit of sharing
+            completePresentChallenge();
+        }
+
+        function completePresentChallenge() {
+            gameState.completedChallenges.present = true;
+            document.getElementById('presentGhost').classList.add('complete');
+            document.getElementById('presentKey').classList.add('show');
+            
+            // Add continue button
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'action-btn';
+            continueBtn.innerHTML = '➡️ Continue to Christmas Future';
+            continueBtn.style.fontSize = '1.2em';
+            continueBtn.style.margin = '20px auto';
+            continueBtn.style.display = 'block';
+            continueBtn.onclick = () => {
+                showScreen('futureScreen');
+                initializeConsequences();
+            };
+            
+            document.getElementById('presentScreen').appendChild(continueBtn);
+        }
+
+        // CONSEQUENCE GAME (Christmas Future)
+        function initializeConsequences() {
+            const actions = document.querySelectorAll('.consequence-action');
+            
+            actions.forEach(action => {
+                action.addEventListener('click', function() {
+                    selectConsequenceAction(this);
+                });
+            });
+            
+            const results = document.querySelectorAll('.consequence-result');
+            results.forEach(result => {
+                result.addEventListener('click', function() {
+                    connectConsequence(this);
+                });
+            });
+        }
+
+        let selectedAction = null;
+
+        function selectConsequenceAction(action) {
+            // Clear previous selections
+            document.querySelectorAll('.consequence-action').forEach(a => {
+                a.classList.remove('selected');
+            });
+            
+            action.classList.add('selected');
+            selectedAction = action.dataset.action;
+        }
+
+        function connectConsequence(result) {
+            if (!selectedAction) {
+                alert('First select an action, then click its consequence!');
+                return;
+            }
+            
+            const resultType = result.dataset.result;
+            
+            if (selectedAction === resultType) {
+                result.classList.add('filled');
+                result.style.border = '2px solid #28a745';
+                consequenceConnections[selectedAction] = resultType;
+                
+                // Clear selection
+                document.querySelectorAll('.consequence-action').forEach(a => {
+                    a.classList.remove('selected');
+                });
+                selectedAction = null;
+                
+                // Check if all connections made
+                const allConnected = Object.keys(consequenceConnections).length === 3;
+                document.getElementById('checkConsequencesBtn').disabled = !allConnected;
+            } else {
+                alert('That\'s not quite right. Think carefully about how each action leads to its consequence.');
+            }
+        }
+
+        function resetConsequences() {
+            consequenceConnections = {};
+            selectedAction = null;
+            
+            document.querySelectorAll('.consequence-action').forEach(action => {
+                action.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.consequence-result').forEach(result => {
+                result.classList.remove('filled');
+                result.style.border = '2px dashed #2a5298';
+            });
+            
+            document.getElementById('checkConsequencesBtn').disabled = true;
+        }
+
+        function checkConsequences() {
+            completeFutureChallenge();
+        }
+
+        function completeFutureChallenge() {
+            gameState.completedChallenges.future = true;
+            document.getElementById('futureGhost').classList.add('complete');
+            document.getElementById('futureKey').classList.add('show');
+            
+            // Add continue button
+            const continueBtn = document.createElement('button');
+            continueBtn.className = 'action-btn';
+            continueBtn.innerHTML = '🔓 Go to Final Lock Challenge';
+            continueBtn.style.fontSize = '1.2em';
+            continueBtn.style.margin = '20px auto';
+            continueBtn.style.display = 'block';
+            continueBtn.onclick = () => {
+                showScreen('lockScreen');
+                initializeLock();
+            };
+            
+            document.getElementById('futureScreen').appendChild(continueBtn);
+        }
+
+        // FINAL LOCK PUZZLE
+        function initializeLock() {
+            // Keys should only be available if challenges are complete
+            if (!gameState.completedChallenges.past) {
+                document.getElementById('keyPast').style.display = 'none';
+            }
+            if (!gameState.completedChallenges.present) {
+                document.getElementById('keyPresent').style.display = 'none';
+            }
+            if (!gameState.completedChallenges.future) {
+                document.getElementById('keyFuture').style.display = 'none';
+            }
+        }
+
+        function selectSlot(slotId) {
+            document.querySelectorAll('.key-slot').forEach(slot => {
+                slot.style.border = '3px solid #2a5298';
+            });
+            
+            document.getElementById(slotId).style.border = '3px solid #c41e3a';
+            gameState.selectedSlot = slotId;
+        }
+
+        function placeKey(keyType) {
+            if (!gameState.selectedSlot) {
+                alert('First click on a lock slot, then click a key!');
+                return;
+            }
+            
+            const slot = document.getElementById(gameState.selectedSlot);
+            const slotType = slot.dataset.slot;
+            
+            if (keyType === slotType) {
+                const keyEmojis = {
+                    'past': '🗝️',
+                    'present': '🎁',
+                    'future': '🔮'
+                };
+                
+                slot.innerHTML = keyEmojis[keyType];
+                slot.classList.add('filled');
+                gameState.lockState[keyType] = true;
+                
+                document.getElementById(`key${keyType.charAt(0).toUpperCase() + keyType.slice(1)}`).classList.add('used');
+                
+                // Check if all keys placed
+                const allKeysPlaced = Object.values(gameState.lockState).every(placed => placed);
+                document.getElementById('unlockBtn').disabled = !allKeysPlaced;
+                
+                gameState.selectedSlot = null;
+                slot.style.border = '3px solid #28a745';
+            } else {
+                alert('That key doesn\'t fit this slot! Remember: Past → Present → Future');
+            }
+        }
+
+        function resetLock() {
+            gameState.lockState = { past: false, present: false, future: false };
+            gameState.selectedSlot = null;
+            
+            document.querySelectorAll('.key-slot').forEach(slot => {
+                slot.innerHTML = `<div style="font-size: 0.4em; color: #666;">${slot.dataset.slot.toUpperCase()}</div>`;
+                slot.classList.remove('filled');
+                slot.style.border = '3px solid #2a5298';
+            });
+            
+            document.querySelectorAll('.draggable-key').forEach(key => {
+                key.classList.remove('used');
+            });
+            
+            document.getElementById('unlockBtn').disabled = true;
+        }
+
+        function unlockRedemption() {
+            showScreen('successScreen');
+            createSnowfall();
+        }
+
+        function createSnowfall() {
+            const snowContainer = document.getElementById('snowContainer');
+            
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const snowflake = document.createElement('div');
+                    snowflake.className = 'snowflake';
+                    snowflake.innerHTML = '❄️';
+                    snowflake.style.left = Math.random() * 100 + '%';
+                    snowflake.style.fontSize = Math.random() * 20 + 10 + 'px';
+                    snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+                    snowflake.style.opacity = Math.random();
+                    
+                    snowContainer.appendChild(snowflake);
+                    
+                    // Remove snowflake after animation
+                    setTimeout(() => {
+                        if (snowflake.parentNode) {
+                            snowflake.parentNode.removeChild(snowflake);
+                        }
+                    }, 5000);
+                }, i * 100);
+            }
+        }
+
+        function showLearningObjectives() {
+            showScreen('learningScreen');
+        }
     </script>
 </body>
 </html>
