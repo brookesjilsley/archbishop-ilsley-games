@@ -1,860 +1,900 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fake News Detective Academy - Archbishop Ilsley</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fake News Detective Academy - Archbishop Ilsley</title>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #2a5298 0%, #c41e3a 100%);
-            min-height: 100vh;
-            color: #333;
-        }
+body {
+font-family: 'Arial', sans-serif;
+background: linear-gradient(135deg, #2a5298 0%, #c41e3a 100%);
+min-height: 100vh;
+color: #333;
+}
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+.container {
+max-width: 900px;
+margin: 0 auto;
+padding: 20px;
+}
 
-        .header {
-            text-align: center;
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 4px solid #c41e3a;
-        }
+.home-button {
+position: fixed;
+top: 20px;
+left: 20px;
+background: linear-gradient(45deg, #c41e3a, #2a5298);
+color: white;
+border: none;
+padding: 12px 20px;
+border-radius: 25px;
+font-size: 1em;
+font-weight: bold;
+cursor: pointer;
+box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+transition: all 0.3s ease;
+z-index: 1000;
+}
 
-        .header h1 {
-            color: #c41e3a;
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
+.home-button:hover {
+background: linear-gradient(45deg, #d4243f, #3460a8);
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
 
-        .header .school-name {
-            color: #2a5298;
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
+.home-button:active {
+transform: translateY(0);
+}
 
-        .header .subtitle {
-            color: #ffd700;
-            background: #333;
-            padding: 10px 20px;
-            border-radius: 25px;
-            display: inline-block;
-            font-size: 1.1em;
-            font-weight: bold;
-        }
+.header {
+text-align: center;
+background: white;
+padding: 30px;
+border-radius: 20px;
+margin-bottom: 30px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+border: 4px solid #c41e3a;
+margin-top: 60px; /* Add margin to avoid overlap with fixed button */
+}
 
-        .game-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 4px solid #ffd700;
-        }
+.header h1 {
+color: #c41e3a;
+font-size: 2.5em;
+margin-bottom: 10px;
+text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
 
-        .difficulty-selector {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+.header .school-name {
+color: #2a5298;
+font-size: 1.2em;
+font-weight: bold;
+margin-bottom: 15px;
+}
 
-        .difficulty-selector h3 {
-            color: #dc143c;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
+.header .subtitle {
+color: #ffd700;
+background: #333;
+padding: 10px 20px;
+border-radius: 25px;
+display: inline-block;
+font-size: 1.1em;
+font-weight: bold;
+}
 
-        .difficulty-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+.game-container {
+background: white;
+border-radius: 20px;
+padding: 30px;
+box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+border: 4px solid #ffd700;
+}
 
-        .difficulty-btn {
-            padding: 15px 25px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+.difficulty-selector {
+text-align: center;
+margin-bottom: 30px;
+}
 
-        .difficulty-btn.easy {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-        }
+.difficulty-selector h3 {
+color: #dc143c;
+margin-bottom: 15px;
+font-size: 1.5em;
+}
 
-        .difficulty-btn.medium {
-            background: linear-gradient(45deg, #ffd700, #ffcd00);
-            color: #333;
-        }
+.difficulty-buttons {
+display: flex;
+gap: 15px;
+justify-content: center;
+flex-wrap: wrap;
+}
 
-        .difficulty-btn.hard {
-            background: linear-gradient(45deg, #dc143c, #b91c3c);
-            color: white;
-        }
+.difficulty-btn {
+padding: 15px 25px;
+border: none;
+border-radius: 15px;
+font-size: 1.1em;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
 
-        .difficulty-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
+.difficulty-btn.easy {
+background: linear-gradient(45deg, #4CAF50, #45a049);
+color: white;
+}
 
-        .difficulty-btn.active {
-            transform: scale(1.1);
-            border: 3px solid #333;
-        }
+.difficulty-btn.medium {
+background: linear-gradient(45deg, #ffd700, #ffcd00);
+color: #333;
+}
 
-        .quiz-section {
-            display: none;
-            text-align: center;
-        }
+.difficulty-btn.hard {
+background: linear-gradient(45deg, #dc143c, #b91c3c);
+color: white;
+}
 
-        .quiz-section.active {
-            display: block;
-        }
+.difficulty-btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
 
-        .score-display {
-            background: linear-gradient(45deg, #1e3c72, #2a5298);
-            color: white;
-            padding: 15px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            font-size: 1.3em;
-            font-weight: bold;
-        }
+.difficulty-btn.active {
+transform: scale(1.1);
+border: 3px solid #333;
+}
 
-        .headline-container {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            border: 3px solid #333;
-        }
+.quiz-section {
+display: none;
+text-align: center;
+}
 
-        .headline-box {
-            background: white;
-            border: 3px solid #dc143c;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 15px 0;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-        }
+.quiz-section.active {
+display: block;
+}
 
-        .headline-box:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
-            border-color: #ffd700;
-        }
+.score-display {
+background: linear-gradient(45deg, #1e3c72, #2a5298);
+color: white;
+padding: 15px;
+border-radius: 15px;
+margin-bottom: 25px;
+font-size: 1.3em;
+font-weight: bold;
+}
 
-        .headline-box.selected {
-            background: #ffd700;
-            border-color: #333;
-            transform: scale(1.02);
-        }
+.headline-container {
+background: #f8f9fa;
+border-radius: 15px;
+padding: 25px;
+margin: 20px 0;
+border: 3px solid #333;
+}
 
-        .headline-box.correct {
-            background: #d4edda;
-            border-color: #28a745;
-        }
+.headline-box {
+background: white;
+border: 3px solid #dc143c;
+border-radius: 12px;
+padding: 20px;
+margin: 15px 0;
+cursor: pointer;
+transition: all 0.3s ease;
+position: relative;
+}
 
-        .headline-box.incorrect {
-            background: #f8d7da;
-            border-color: #dc3545;
-        }
+.headline-box:hover {
+transform: translateY(-2px);
+box-shadow: 0 8px 25px rgba(220, 20, 60, 0.3);
+border-color: #ffd700;
+}
 
-        .headline-text {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #333;
-            line-height: 1.4;
-        }
+.headline-box.selected {
+background: #ffd700;
+border-color: #333;
+transform: scale(1.02);
+}
 
-        .headline-label {
-            position: absolute;
-            top: -10px;
-            left: 20px;
-            background: #1e3c72;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 10px;
-            font-size: 0.9em;
-            font-weight: bold;
-        }
+.headline-box.correct {
+background: #d4edda;
+border-color: #28a745;
+}
 
-        .action-buttons {
-            margin: 25px 0;
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+.headline-box.incorrect {
+background: #f8d7da;
+border-color: #dc3545;
+}
 
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 15px;
-            font-size: 1.1em;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
+.headline-text {
+font-size: 1.2em;
+font-weight: bold;
+color: #333;
+line-height: 1.4;
+}
 
-        .btn-primary {
-            background: linear-gradient(45deg, #dc143c, #b91c3c);
-            color: white;
-        }
+.headline-label {
+position: absolute;
+top: -10px;
+left: 20px;
+background: #1e3c72;
+color: white;
+padding: 5px 15px;
+border-radius: 10px;
+font-size: 0.9em;
+font-weight: bold;
+}
 
-        .btn-secondary {
-            background: linear-gradient(45deg, #ffd700, #ffcd00);
-            color: #333;
-        }
+.action-buttons {
+margin: 25px 0;
+display: flex;
+gap: 15px;
+justify-content: center;
+flex-wrap: wrap;
+}
 
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
-        }
+.btn {
+padding: 15px 30px;
+border: none;
+border-radius: 15px;
+font-size: 1.1em;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
 
-        .btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
+.btn-primary {
+background: linear-gradient(45deg, #dc143c, #b91c3c);
+color: white;
+}
 
-        .feedback {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            border-left: 5px solid #1e3c72;
-            display: none;
-        }
+.btn-secondary {
+background: linear-gradient(45deg, #ffd700, #ffcd00);
+color: #333;
+}
 
-        .feedback.show {
-            display: block;
-            animation: slideIn 0.5s ease;
-        }
+.btn:hover {
+transform: translateY(-3px);
+box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+.btn:disabled {
+opacity: 0.6;
+cursor: not-allowed;
+transform: none;
+}
 
-        .feedback h4 {
-            color: #dc143c;
-            margin-bottom: 10px;
-        }
+.feedback {
+background: #f8f9fa;
+border-radius: 15px;
+padding: 20px;
+margin: 20px 0;
+border-left: 5px solid #1e3c72;
+display: none;
+}
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #1e3c72;
-            font-size: 1.2em;
-        }
+.feedback.show {
+display: block;
+animation: slideIn 0.5s ease;
+}
 
-        .loading::after {
-            content: '...';
-            animation: dots 1.5s infinite;
-        }
+@keyframes slideIn {
+from {
+opacity: 0;
+transform: translateY(20px);
+}
+to {
+opacity: 1;
+transform: translateY(0);
+}
+}
 
-        @keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
-        }
+.feedback h4 {
+color: #dc143c;
+margin-bottom: 10px;
+}
 
-        .instructions {
-            background: linear-gradient(45deg, #ffd700, #ffcd00);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 25px;
-            border: 3px solid #333;
-        }
+.loading {
+text-align: center;
+padding: 40px;
+color: #1e3c72;
+font-size: 1.2em;
+}
 
-        .instructions h3 {
-            color: #333;
-            margin-bottom: 10px;
-        }
+.loading::after {
+content: '...';
+animation: dots 1.5s infinite;
+}
 
-        .emoji {
-            font-size: 1.5em;
-            margin: 0 5px;
-        }
+@keyframes dots {
+0%, 20% { content: '.'; }
+40% { content: '..'; }
+60%, 100% { content: '...'; }
+}
 
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            .header h1 {
-                font-size: 2em;
-            }
-            
-            .difficulty-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-    </style>
+.instructions {
+background: linear-gradient(45deg, #ffd700, #ffcd00);
+border-radius: 15px;
+padding: 20px;
+margin-bottom: 25px;
+border: 3px solid #333;
+}
+
+.instructions h3 {
+color: #333;
+margin-bottom: 10px;
+}
+
+.emoji {
+font-size: 1.5em;
+margin: 0 5px;
+}
+
+@media (max-width: 768px) {
+.container {
+padding: 10px;
+}
+
+.header {
+margin-top: 70px; /* More space on mobile */
+}
+
+.header h1 {
+font-size: 2em;
+}
+
+.home-button {
+position: fixed;
+top: 10px;
+left: 10px;
+padding: 10px 15px;
+font-size: 0.9em;
+}
+
+.difficulty-buttons {
+flex-direction: column;
+align-items: center;
+}
+
+.action-buttons {
+flex-direction: column;
+align-items: center;
+}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <button class="home-button" onclick="window.location.href = 'https://brookesjilsley.github.io/archbishop-ilsley-games/'">
-            🏠 Back to Hub
-        </button>
-        
-        <div class="header">
-            <h1>🕵️ Fake News Detective Academy 🔍</h1>
-            <div class="school-name">Archbishop Ilsley Catholic School</div>
-            <div class="subtitle">🎯 Can You Spot the Fake Headlines? 🎯</div>
-        </div>
+<div class="container">
+<button class="home-button" onclick="window.location.href = 'https://brookesjilsley.github.io/archbishop-ilsley-games/'">
+🏠 Back to Hub
+</button>
 
-        <div class="game-container">
-            <div class="difficulty-selector">
-                <h3>🌟 Choose Your Detective Level 🌟</h3>
-                <div class="difficulty-buttons">
-                    <button class="difficulty-btn easy" onclick="selectDifficulty('easy')">
-                        <span class="emoji">😊</span> Detective Trainee
-                    </button>
-                    <button class="difficulty-btn medium" onclick="selectDifficulty('medium')">
-                        <span class="emoji">🤔</span> Detective Officer  
-                    </button>
-                    <button class="difficulty-btn hard" onclick="selectDifficulty('hard')">
-                        <span class="emoji">🧠</span> Master Detective
-                    </button>
-                </div>
-            </div>
+<div class="header">
+<h1>🕵️ Fake News Detective Academy 🔍</h1>
+<div class="school-name">Archbishop Ilsley Catholic School</div>
+<div class="subtitle">🎯 Can You Spot the Fake Headlines? 🎯</div>
+</div>
 
-            <div class="quiz-section" id="quizSection">
-                <div class="instructions">
-                    <h3>🎯 Your Mission:</h3>
-                    <p>Look at the two headlines below. One is REAL and one is FAKE. Can you spot which one is trying to trick you? Click on the headline you think is FAKE!</p>
-                </div>
+<div class="game-container">
+<div class="difficulty-selector">
+<h3>🌟 Choose Your Detective Level 🌟</h3>
+<div class="difficulty-buttons">
+<button class="difficulty-btn easy" onclick="selectDifficulty('easy')">
+<span class="emoji">😊</span> Detective Trainee
+</button>
+<button class="difficulty-btn medium" onclick="selectDifficulty('medium')">
+<span class="emoji">🤔</span> Detective Officer
+</button>
+<button class="difficulty-btn hard" onclick="selectDifficulty('hard')">
+<span class="emoji">🧠</span> Master Detective
+</button>
+</div>
+</div>
 
-                <div class="score-display" id="scoreDisplay">
-                    🏆 Score: 0/0 | 🎯 Detective Rank: Trainee
-                </div>
+<div class="quiz-section" id="quizSection">
+<div class="instructions">
+<h3>🎯 Your Mission:</h3>
+<p>Look at the two headlines below. One is REAL and one is FAKE. Can you spot which one is trying to trick you? Click on the headline you think is FAKE!</p>
+</div>
 
-                <div class="headline-container" id="headlineContainer">
-                    <div class="loading" id="loadingMessage">
-                        🤖 Our AI is creating tricky headlines for you to solve
-                    </div>
-                </div>
+<div class="score-display" id="scoreDisplay">
+🏆 Score: 0/0 | 🎯 Detective Rank: Trainee
+</div>
 
-                <div class="action-buttons">
-                    <button class="btn btn-primary" id="checkAnswerBtn" onclick="checkAnswer()" disabled>
-                        🔍 Check My Answer!
-                    </button>
-                    <button class="btn btn-secondary" id="nextQuestionBtn" onclick="nextQuestion()" style="display: none;">
-                        ➡️ Next Challenge!
-                    </button>
-                </div>
+<div class="headline-container" id="headlineContainer">
+<div class="loading" id="loadingMessage">
+🤖 Our AI is creating tricky headlines for you to solve
+</div>
+</div>
 
-                <div class="feedback" id="feedbackSection">
-                    <h4 id="feedbackTitle"></h4>
-                    <p id="feedbackText"></p>
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="action-buttons">
+<button class="btn btn-primary" id="checkAnswerBtn" onclick="checkAnswer()" disabled>
+🔍 Check My Answer!
+</button>
+<button class="btn btn-secondary" id="nextQuestionBtn" onclick="nextQuestion()" style="display: none;">
+➡️ Next Challenge!
+</button>
+</div>
 
-    <script>
-        // Game state
-        let currentDifficulty = '';
-        let score = 0;
-        let totalQuestions = 0;
-        let maxQuestions = 8; // Fixed 8 rounds
-        let selectedHeadline = null;
-        let currentQuestion = null;
-        let usedQuestions = []; // Track used questions to avoid repeats
+<div class="feedback" id="feedbackSection">
+<h4 id="feedbackTitle"></h4>
+<p id="feedbackText"></p>
+</div>
+</div>
+</div>
+</div>
 
-        // Your Google Apps Script Web App URL (you'll need to update this)
-        const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+<script>
+// Game state
+let currentDifficulty = '';
+let score = 0;
+let totalQuestions = 0;
+let maxQuestions = 8; // Fixed 8 rounds
+let selectedHeadline = null;
+let currentQuestion = null;
+let usedQuestions = []; // Track used questions to avoid repeats
 
-        function selectDifficulty(difficulty) {
-            // Update button states
-            document.querySelectorAll('.difficulty-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
-            
-            currentDifficulty = difficulty;
-            
-            // Show quiz section
-            document.getElementById('quizSection').classList.add('active');
-            
-            // Reset game
-            score = 0;
-            totalQuestions = 0;
-            usedQuestions = [];
-            updateScore();
-            
-            // Generate first question
-            generateQuestion();
-        }
+// Your Google Apps Script Web App URL (you'll need to update this)
+const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
-        async function generateQuestion() {
-            // Check if game is complete
-            if (totalQuestions >= maxQuestions) {
-                showFinalResults();
-                return;
-            }
+function selectDifficulty(difficulty) {
+// Update button states
+document.querySelectorAll('.difficulty-btn').forEach(btn => {
+btn.classList.remove('active');
+});
+event.target.classList.add('active');
 
-            const container = document.getElementById('headlineContainer');
-            const checkBtn = document.getElementById('checkAnswerBtn');
-            const nextBtn = document.getElementById('nextQuestionBtn');
-            const feedback = document.getElementById('feedbackSection');
-            
-            // Show loading
-            container.innerHTML = '<div class="loading" id="loadingMessage">🤖 Creating your detective challenge</div>';
-            checkBtn.disabled = true;
-            nextBtn.style.display = 'none';
-            feedback.classList.remove('show');
-            selectedHeadline = null;
+currentDifficulty = difficulty;
 
-            try {
-                // Get available questions (not used yet)
-                const allQuestions = getSampleQuestions(currentDifficulty);
-                const availableQuestions = allQuestions.filter((_, index) => !usedQuestions.includes(index));
-                
-                // If we've used all questions, reset the pool
-                if (availableQuestions.length === 0) {
-                    usedQuestions = [];
-                    availableQuestions = allQuestions;
-                }
-                
-                // Pick a random question from available ones
-                const questionIndex = Math.floor(Math.random() * availableQuestions.length);
-                currentQuestion = availableQuestions[questionIndex];
-                
-                // Mark this question as used
-                const originalIndex = allQuestions.indexOf(currentQuestion);
-                usedQuestions.push(originalIndex);
-                
-                displayQuestion(currentQuestion);
-                
-            } catch (error) {
-                console.error('Error generating question:', error);
-                container.innerHTML = '<div style="color: red; text-align: center;">Oops! Something went wrong. Please try again! 🔧</div>';
-            }
-        }
+// Show quiz section
+document.getElementById('quizSection').classList.add('active');
 
-        function getSampleQuestions(difficulty) {
-            const questions = {
-                easy: [
-                    {
-                        real: "Local School Wins Regional Science Fair",
-                        fake: "Birmingham Student Invents Time Machine in Garage",
-                        explanation: "The fake headline makes an impossible scientific claim. Time travel hasn't been invented yet! Real news stories are more modest and believable."
-                    },
-                    {
-                        real: "New Library Opens in City Centre",
-                        fake: "Library Books Start Reading Themselves to Visitors",
-                        explanation: "Books can't read themselves! The fake headline describes something magical that isn't possible in real life."
-                    },
-                    {
-                        real: "School Garden Grows Prize-Winning Vegetables",
-                        fake: "School's Pet Rabbit Becomes Head of Mathematics Department",
-                        explanation: "Animals can't become teachers! This fake headline is clearly impossible and silly."
-                    },
-                    {
-                        real: "Students Raise Money for Local Charity",
-                        fake: "Homework Assignment Teaches Itself to Students While They Sleep",
-                        explanation: "Homework can't teach itself! This fake headline describes something that could never happen."
-                    },
-                    {
-                        real: "New Playground Equipment Installed at Primary School",
-                        fake: "Playground Swings Generate Electricity for Entire Town",
-                        explanation: "Playground swings can't power a whole town! This fake headline makes impossible claims about energy."
-                    },
-                    {
-                        real: "School Choir Performs at Local Festival",
-                        fake: "School's Magic Piano Plays Concert by Itself",
-                        explanation: "Pianos aren't magic and can't play by themselves! Real news doesn't involve magic."
-                    },
-                    {
-                        real: "Teachers Attend Training Workshop",
-                        fake: "School Textbooks Rewrite Themselves Every Night",
-                        explanation: "Books can't rewrite themselves! This fake headline describes something impossible."
-                    },
-                    {
-                        real: "School Football Team Wins Championship",
-                        fake: "School's Goal Posts Move to Help Team Win Games",
-                        explanation: "Goal posts can't move by themselves! This fake headline describes cheating that's impossible."
-                    },
-                    {
-                        real: "Students Create Art Exhibition for Parents",
-                        fake: "School's Paintbrushes Paint Perfect Pictures Without Artists",
-                        explanation: "Paintbrushes can't paint by themselves! Art requires human creativity and skill."
-                    },
-                    {
-                        real: "School Organizes Successful Book Fair",
-                        fake: "School Library's Books Fly Around Room During Reading Time",
-                        explanation: "Books can't fly! This fake headline describes something that defies the laws of physics."
-                    }
-                ],
-                medium: [
-                    {
-                        real: "Study Shows Benefits of Exercise for Mental Health",
-                        fake: "Scientists Discover Exercise Makes People 50% Smarter Overnight",
-                        explanation: "The fake headline exaggerates with impossible claims like 'overnight' and specific percentages that seem too good to be true."
-                    },
-                    {
-                        real: "Local Council Announces New Recycling Program",
-                        fake: "Revolutionary Recycling Machine Turns Plastic Into Pure Gold",
-                        explanation: "The fake headline promises something that sounds too amazing to be true - turning plastic into gold!"
-                    },
-                    {
-                        real: "School Introduces New Computing Course",
-                        fake: "New School Computer Can Predict Students' Future Careers 100% Accurately",
-                        explanation: "No computer can predict the future with 100% accuracy! This fake headline makes impossible promises."
-                    },
-                    {
-                        real: "Students Participate in Science Competition",
-                        fake: "Local Student's Science Project Solves Climate Change Completely",
-                        explanation: "Climate change is a complex global problem that can't be solved by one school project. The fake headline oversimplifies a huge issue."
-                    },
-                    {
-                        real: "School Wins Award for Environmental Project",
-                        fake: "School's New Solar Panels Power Entire Birmingham",
-                        explanation: "School solar panels couldn't power a whole city! The fake headline makes wildly exaggerated claims about scale."
-                    },
-                    {
-                        real: "New School Website Launches Successfully",
-                        fake: "School's Website Reads Students' Minds to Show Perfect Information",
-                        explanation: "Websites can't read minds! This fake headline attributes impossible abilities to technology."
-                    },
-                    {
-                        real: "School Cafeteria Introduces Healthy Menu Options",
-                        fake: "School's New Menu Makes Students 300% Healthier in One Week",
-                        explanation: "You can't measure health with exact percentages like this, and dramatic changes don't happen in one week!"
-                    },
-                    {
-                        real: "Students Learn About Internet Safety",
-                        fake: "New Internet Safety App Prevents All Cyberbullying Forever",
-                        explanation: "No single app can solve all cyberbullying 'forever' - this fake headline makes unrealistic promises about complex problems."
-                    },
-                    {
-                        real: "School Orchestra Performs at Concert Hall",
-                        fake: "School's Music Lessons Guarantee Students Become Professional Musicians",
-                        explanation: "Nothing can 'guarantee' career success - becoming a professional musician requires much more than just school lessons."
-                    },
-                    {
-                        real: "Local Business Sponsors School Sports Team",
-                        fake: "New Sports Training Method Creates Olympic Champions in 30 Days",
-                        explanation: "Olympic champions train for years, not 30 days! This fake headline promises impossible quick results."
-                    }
-                ],
-                hard: [
-                    {
-                        real: "Research Links Social Media Use to Sleep Patterns",
-                        fake: "New Study: Social Media Apps Secretly Control Users' Dreams",
-                        explanation: "While social media can affect sleep, the fake headline makes conspiracy-like claims about 'secretly controlling dreams' without evidence."
-                    },
-                    {
-                        real: "Schools Report Increase in Digital Learning Tools",
-                        fake: "AI Teaching Assistants Replace 90% of Teachers Nationwide",
-                        explanation: "The fake headline uses dramatic statistics and fear-based language. Real changes in education happen gradually, not suddenly."
-                    },
-                    {
-                        real: "Government Announces Education Funding Increase",
-                        fake: "Secret Government Report Shows Private Schools 80% Better Than State Schools",
-                        explanation: "The fake headline uses 'secret' to sound mysterious and gives a suspiciously exact statistic without naming sources."
-                    },
-                    {
-                        real: "University Research Finds Reading Benefits Brain Development",
-                        fake: "Hidden Study Reveals Screen Time Permanently Damages Children's Brains",
-                        explanation: "The fake headline uses scary words like 'hidden' and 'permanently damages' to create fear without balanced evidence."
-                    },
-                    {
-                        real: "Local School Implements Anti-Bullying Program",
-                        fake: "Exclusive Investigation: Most Teachers Ignore Bullying to Avoid Paperwork",
-                        explanation: "This fake headline makes sweeping accusations about 'most teachers' without evidence and uses 'exclusive' to sound important."
-                    },
-                    {
-                        real: "Students Show Improved Test Scores After Extra Support",
-                        fake: "Shocking Truth: Standardized Tests Designed to Make Students Fail",
-                        explanation: "The fake headline uses emotional words like 'shocking truth' and makes conspiracy claims without providing evidence."
-                    },
-                    {
-                        real: "School District Reviews Homework Policies",
-                        fake: "Leaked Documents Prove Homework Causes More Harm Than Good",
-                        explanation: "This fake headline uses 'leaked documents' to sound secretive and makes absolute claims ('more harm than good') about a complex issue."
-                    },
-                    {
-                        real: "Teachers Report Challenges with Remote Learning",
-                        fake: "Industry Insider Reveals Online Learning Companies Profit from Student Failure",
-                        explanation: "The fake headline uses 'industry insider' without naming them and makes serious accusations without providing proof."
-                    },
-                    {
-                        real: "Study Examines Effects of School Start Times",
-                        fake: "Suppressed Research Shows Early School Times Linked to Reduced Intelligence",
-                        explanation: "This fake headline uses 'suppressed research' to suggest a cover-up and makes dramatic claims about intelligence without proper evidence."
-                    },
-                    {
-                        real: "Parents Survey Shows Mixed Views on School Technology",
-                        fake: "Confidential Report: Tech Companies Secretly Track All Student Data",
-                        explanation: "The fake headline uses 'confidential' and 'secretly' to create conspiracy fears and makes broad claims about 'all' student data without evidence."
-                    }
-                ]
-            };
-            
-            return questions[difficulty] || questions.easy;
-        }
+// Reset game
+score = 0;
+totalQuestions = 0;
+usedQuestions = [];
+updateScore();
 
-        function displayQuestion(question) {
-            const container = document.getElementById('headlineContainer');
-            
-            // Randomly decide which headline goes first
-            const isRealFirst = Math.random() > 0.5;
-            const headline1 = isRealFirst ? question.real : question.fake;
-            const headline2 = isRealFirst ? question.fake : question.real;
-            
-            container.innerHTML = `
-                <div class="headline-box" onclick="selectHeadline(this, '${isRealFirst ? 'real' : 'fake'}')">
-                    <div class="headline-label">Headline A</div>
-                    <div class="headline-text">${headline1}</div>
-                </div>
-                <div class="headline-box" onclick="selectHeadline(this, '${isRealFirst ? 'fake' : 'real'}')">
-                    <div class="headline-label">Headline B</div>
-                    <div class="headline-text">${headline2}</div>
-                </div>
-            `;
-        }
+// Generate first question
+generateQuestion();
+}
 
-        function selectHeadline(element, type) {
-            // Remove previous selections
-            document.querySelectorAll('.headline-box').forEach(box => {
-                box.classList.remove('selected');
-            });
-            
-            // Select current headline
-            element.classList.add('selected');
-            selectedHeadline = type;
-            
-            // Enable check button
-            document.getElementById('checkAnswerBtn').disabled = false;
-        }
+async function generateQuestion() {
+// Check if game is complete
+if (totalQuestions >= maxQuestions) {
+showFinalResults();
+return;
+}
 
-        function checkAnswer() {
-            if (!selectedHeadline) return;
-            
-            const isCorrect = selectedHeadline === 'fake';
-            totalQuestions++;
-            
-            if (isCorrect) {
-                score++;
-            }
-            
-            // Visual feedback on headlines
-            document.querySelectorAll('.headline-box').forEach(box => {
-                const isFakeHeadline = box.onclick.toString().includes("'fake'");
-                if (isFakeHeadline) {
-                    box.classList.add('correct');
-                    box.style.border = '4px solid #28a745';
-                } else {
-                    box.classList.add('incorrect');
-                    if (box.classList.contains('selected') && !isCorrect) {
-                        box.style.border = '4px solid #dc3545';
-                    }
-                }
-                box.onclick = null; // Disable clicking
-            });
-            
-            // Show feedback
-            const feedback = document.getElementById('feedbackSection');
-            const title = document.getElementById('feedbackTitle');
-            const text = document.getElementById('feedbackText');
-            
-            if (isCorrect) {
-                title.textContent = '🎉 Well Done, Detective!';
-                title.style.color = '#28a745';
-            } else {
-                title.textContent = '🤔 Not Quite Right!';
-                title.style.color = '#dc3545';
-            }
-            
-            text.textContent = currentQuestion.explanation;
-            feedback.classList.add('show');
-            
-            // Update score and buttons
-            updateScore();
-            document.getElementById('checkAnswerBtn').style.display = 'none';
-            
-            // Check if this is the final question
-            if (totalQuestions >= maxQuestions) {
-                document.getElementById('nextQuestionBtn').textContent = '🏆 See Final Results!';
-            }
-            document.getElementById('nextQuestionBtn').style.display = 'inline-block';
-        }
+const container = document.getElementById('headlineContainer');
+const checkBtn = document.getElementById('checkAnswerBtn');
+const nextBtn = document.getElementById('nextQuestionBtn');
+const feedback = document.getElementById('feedbackSection');
 
-        function nextQuestion() {
-            // Check if game is complete
-            if (totalQuestions >= maxQuestions) {
-                showFinalResults();
-                return;
-            }
+// Show loading
+container.innerHTML = '<div class="loading" id="loadingMessage">🤖 Creating your detective challenge</div>';
+checkBtn.disabled = true;
+nextBtn.style.display = 'none';
+feedback.classList.remove('show');
+selectedHeadline = null;
 
-            // Reset button states
-            document.getElementById('checkAnswerBtn').style.display = 'inline-block';
-            document.getElementById('checkAnswerBtn').disabled = true;
-            document.getElementById('nextQuestionBtn').style.display = 'none';
-            document.getElementById('nextQuestionBtn').textContent = '➡️ Next Challenge!';
-            
-            // Reset selection
-            selectedHeadline = null;
-            
-            generateQuestion();
-        }
+try {
+// Get available questions (not used yet)
+const allQuestions = getSampleQuestions(currentDifficulty);
+const availableQuestions = allQuestions.filter((_, index) => !usedQuestions.includes(index));
 
-        function showFinalResults() {
-            const container = document.getElementById('headlineContainer');
-            const percentage = Math.round((score / maxQuestions) * 100);
-            
-            let rank = '';
-            let rankColor = '';
-            let rankIcon = '';
-            let message = '';
-            
-            if (percentage >= 88) {
-                rank = 'Master Detective';
-                rankColor = '#ffd700';
-                rankIcon = '🏆';
-                message = 'Outstanding! You have excellent fake news detection skills!';
-            } else if (percentage >= 75) {
-                rank = 'Senior Detective';
-                rankColor = '#c0c0c0';
-                rankIcon = '🥈';
-                message = 'Great work! You spotted most of the fake headlines!';
-            } else if (percentage >= 63) {
-                rank = 'Detective Officer';
-                rankColor = '#cd7f32';
-                rankIcon = '🥉';
-                message = 'Good job! You\'re developing strong critical thinking skills!';
-            } else if (percentage >= 50) {
-                rank = 'Detective Cadet';
-                rankColor = '#4CAF50';
-                rankIcon = '🎯';
-                message = 'Nice try! Keep practicing to improve your fake news detection!';
-            } else {
-                rank = 'Detective Trainee';
-                rankColor = '#2196F3';
-                rankIcon = '📚';
-                message = 'Good effort! Practice makes perfect - try again to improve!';
-            }
-            
-            container.innerHTML = `
-                <div style="text-align: center; padding: 30px;">
-                    <div style="font-size: 4em; margin-bottom: 20px;">${rankIcon}</div>
-                    <h2 style="color: ${rankColor}; font-size: 2.2em; margin-bottom: 15px;">
-                        Final Rank: ${rank}
-                    </h2>
-                    <div style="font-size: 1.5em; color: #333; margin-bottom: 20px;">
-                        <strong>Score: ${score} out of ${maxQuestions} (${percentage}%)</strong>
-                    </div>
-                    <div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid ${rankColor};">
-                        <p style="font-size: 1.2em; color: #333; margin: 0;">${message}</p>
-                    </div>
-                    <div style="margin-top: 25px;">
-                        <button class="btn btn-primary" onclick="location.reload()" style="margin: 10px;">
-                            🔄 Play Again
-                        </button>
-                    </div>
-                </div>
-            `;
-            
-            // Hide buttons and feedback
-            document.getElementById('checkAnswerBtn').style.display = 'none';
-            document.getElementById('nextQuestionBtn').style.display = 'none';
-            document.getElementById('feedbackSection').classList.remove('show');
-            
-            // Update score display for final time
-            updateFinalScore(rank);
-        }
+// If we've used all questions, reset the pool
+if (availableQuestions.length === 0) {
+usedQuestions = [];
+availableQuestions = allQuestions;
+}
 
-        function shareCertificate() {
-            const percentage = Math.round((score / maxQuestions) * 100);
-            let rank = '';
-            
-            if (percentage >= 88) rank = 'Master Detective';
-            else if (percentage >= 75) rank = 'Senior Detective';
-            else if (percentage >= 63) rank = 'Detective Officer';
-            else if (percentage >= 50) rank = 'Detective Cadet';
-            else rank = 'Detective Trainee';
-            
-            const shareText = `🕵️ I just completed the Fake News Detective Academy at Archbishop Ilsley School! 
-            
+// Pick a random question from available ones
+const questionIndex = Math.floor(Math.random() * availableQuestions.length);
+currentQuestion = availableQuestions[questionIndex];
+
+// Mark this question as used
+const originalIndex = allQuestions.indexOf(currentQuestion);
+usedQuestions.push(originalIndex);
+
+displayQuestion(currentQuestion);
+} catch (error) {
+console.error('Error generating question:', error);
+container.innerHTML = '<div style="color: red; text-align: center;">Oops! Something went wrong. Please try again! 🔧</div>';
+}
+}
+
+function getSampleQuestions(difficulty) {
+const questions = {
+easy: [
+{
+real: "Local School Wins Regional Science Fair",
+fake: "Birmingham Student Invents Time Machine in Garage",
+explanation: "The fake headline makes an impossible scientific claim. Time travel hasn't been invented yet! Real news stories are more modest and believable."
+},
+{
+real: "New Library Opens in City Centre",
+fake: "Library Books Start Reading Themselves to Visitors",
+explanation: "Books can't read themselves! The fake headline describes something magical that isn't possible in real life."
+},
+{
+real: "School Garden Grows Prize-Winning Vegetables",
+fake: "School's Pet Rabbit Becomes Head of Mathematics Department",
+explanation: "Animals can't become teachers! This fake headline is clearly impossible and silly."
+},
+{
+real: "Students Raise Money for Local Charity",
+fake: "Homework Assignment Teaches Itself to Students While They Sleep",
+explanation: "Homework can't teach itself! This fake headline describes something that could never happen."
+},
+{
+real: "New Playground Equipment Installed at Primary School",
+fake: "Playground Swings Generate Electricity for Entire Town",
+explanation: "Playground swings can't power a whole town! This fake headline makes impossible claims about energy."
+},
+{
+real: "School Choir Performs at Local Festival",
+fake: "School's Magic Piano Plays Concert by Itself",
+explanation: "Pianos aren't magic and can't play by themselves! Real news doesn't involve magic."
+},
+{
+real: "Teachers Attend Training Workshop",
+fake: "School Textbooks Rewrite Themselves Every Night",
+explanation: "Books can't rewrite themselves! This fake headline describes something impossible."
+},
+{
+real: "School Football Team Wins Championship",
+fake: "School's Goal Posts Move to Help Team Win Games",
+explanation: "Goal posts can't move by themselves! This fake headline describes cheating that's impossible."
+},
+{
+real: "Students Create Art Exhibition for Parents",
+fake: "School's Paintbrushes Paint Perfect Pictures Without Artists",
+explanation: "Paintbrushes can't paint by themselves! Art requires human creativity and skill."
+},
+{
+real: "School Organizes Successful Book Fair",
+fake: "School Library's Books Fly Around Room During Reading Time",
+explanation: "Books can't fly! This fake headline describes something that defies the laws of physics."
+}
+],
+
+medium: [
+{
+real: "Study Shows Benefits of Exercise for Mental Health",
+fake: "Scientists Discover Exercise Makes People 50% Smarter Overnight",
+explanation: "The fake headline exaggerates with impossible claims like 'overnight' and specific percentages that seem too good to be true."
+},
+{
+real: "Local Council Announces New Recycling Program",
+fake: "Revolutionary Recycling Machine Turns Plastic Into Pure Gold",
+explanation: "The fake headline promises something that sounds too amazing to be true - turning plastic into gold!"
+},
+{
+real: "School Introduces New Computing Course",
+fake: "New School Computer Can Predict Students' Future Careers 100% Accurately",
+explanation: "No computer can predict the future with 100% accuracy! This fake headline makes impossible promises."
+},
+{
+real: "Students Participate in Science Competition",
+fake: "Local Student's Science Project Solves Climate Change Completely",
+explanation: "Climate change is a complex global problem that can't be solved by one school project. The fake headline oversimplifies a huge issue."
+},
+{
+real: "School Wins Award for Environmental Project",
+fake: "School's New Solar Panels Power Entire Birmingham",
+explanation: "School solar panels couldn't power a whole city! The fake headline makes wildly exaggerated claims about scale."
+},
+{
+real: "New School Website Launches Successfully",
+fake: "School's Website Reads Students' Minds to Show Perfect Information",
+explanation: "Websites can't read minds! This fake headline attributes impossible abilities to technology."
+},
+{
+real: "School Cafeteria Introduces Healthy Menu Options",
+fake: "School's New Menu Makes Students 300% Healthier in One Week",
+explanation: "You can't measure health with exact percentages like this, and dramatic changes don't happen in one week!"
+},
+{
+real: "Students Learn About Internet Safety",
+fake: "New Internet Safety App Prevents All Cyberbullying Forever",
+explanation: "No single app can solve all cyberbullying 'forever' - this fake headline makes unrealistic promises about complex problems."
+},
+{
+real: "School Orchestra Performs at Concert Hall",
+fake: "School's Music Lessons Guarantee Students Become Professional Musicians",
+explanation: "Nothing can 'guarantee' career success - becoming a professional musician requires much more than just school lessons."
+},
+{
+real: "Local Business Sponsors School Sports Team",
+fake: "New Sports Training Method Creates Olympic Champions in 30 Days",
+explanation: "Olympic champions train for years, not 30 days! This fake headline promises impossible quick results."
+}
+],
+
+hard: [
+{
+real: "Research Links Social Media Use to Sleep Patterns",
+fake: "New Study: Social Media Apps Secretly Control Users' Dreams",
+explanation: "While social media can affect sleep, the fake headline makes conspiracy-like claims about 'secretly controlling dreams' without evidence."
+},
+{
+real: "Schools Report Increase in Digital Learning Tools",
+fake: "AI Teaching Assistants Replace 90% of Teachers Nationwide",
+explanation: "The fake headline uses dramatic statistics and fear-based language. Real changes in education happen gradually, not suddenly."
+},
+{
+real: "Government Announces Education Funding Increase",
+fake: "Secret Government Report Shows Private Schools 80% Better Than State Schools",
+explanation: "The fake headline uses 'secret' to sound mysterious and gives a suspiciously exact statistic without naming sources."
+},
+{
+real: "University Research Finds Reading Benefits Brain Development",
+fake: "Hidden Study Reveals Screen Time Permanently Damages Children's Brains",
+explanation: "The fake headline uses scary words like 'hidden' and 'permanently damages' to create fear without balanced evidence."
+},
+{
+real: "Local School Implements Anti-Bullying Program",
+fake: "Exclusive Investigation: Most Teachers Ignore Bullying to Avoid Paperwork",
+explanation: "This fake headline makes sweeping accusations about 'most teachers' without evidence and uses 'exclusive' to sound important."
+},
+{
+real: "Students Show Improved Test Scores After Extra Support",
+fake: "Shocking Truth: Standardized Tests Designed to Make Students Fail",
+explanation: "The fake headline uses emotional words like 'shocking truth' and makes conspiracy claims without providing evidence."
+},
+{
+real: "School District Reviews Homework Policies",
+fake: "Leaked Documents Prove Homework Causes More Harm Than Good",
+explanation: "This fake headline uses 'leaked documents' to sound secretive and makes absolute claims ('more harm than good') about a complex issue."
+},
+{
+real: "Teachers Report Challenges with Remote Learning",
+fake: "Industry Insider Reveals Online Learning Companies Profit from Student Failure",
+explanation: "The fake headline uses 'industry insider' without naming them and makes serious accusations without providing proof."
+},
+{
+real: "Study Examines Effects of School Start Times",
+fake: "Suppressed Research Shows Early School Times Linked to Reduced Intelligence",
+explanation: "This fake headline uses 'suppressed research' to suggest a cover-up and makes dramatic claims about intelligence without proper evidence."
+},
+{
+real: "Parents Survey Shows Mixed Views on School Technology",
+fake: "Confidential Report: Tech Companies Secretly Track All Student Data",
+explanation: "The fake headline uses 'confidential' and 'secretly' to create conspiracy fears and makes broad claims about 'all' student data without evidence."
+}
+]
+};
+
+return questions[difficulty] || questions.easy;
+}
+
+function displayQuestion(question) {
+const container = document.getElementById('headlineContainer');
+
+// Randomly decide which headline goes first
+const isRealFirst = Math.random() > 0.5;
+const headline1 = isRealFirst ? question.real : question.fake;
+const headline2 = isRealFirst ? question.fake : question.real;
+
+container.innerHTML = `
+<div class="headline-box" onclick="selectHeadline(this, '${isRealFirst ? 'real' : 'fake'}')">
+<div class="headline-label">Headline A</div>
+<div class="headline-text">${headline1}</div>
+</div>
+<div class="headline-box" onclick="selectHeadline(this, '${isRealFirst ? 'fake' : 'real'}')">
+<div class="headline-label">Headline B</div>
+<div class="headline-text">${headline2}</div>
+</div>
+`;
+}
+
+function selectHeadline(element, type) {
+// Remove previous selections
+document.querySelectorAll('.headline-box').forEach(box => {
+box.classList.remove('selected');
+});
+
+// Select current headline
+element.classList.add('selected');
+selectedHeadline = type;
+
+// Enable check button
+document.getElementById('checkAnswerBtn').disabled = false;
+}
+
+function checkAnswer() {
+if (!selectedHeadline) return;
+
+const isCorrect = selectedHeadline === 'fake';
+totalQuestions++;
+if (isCorrect) {
+score++;
+}
+
+// Visual feedback on headlines
+document.querySelectorAll('.headline-box').forEach(box => {
+const isFakeHeadline = box.onclick.toString().includes("'fake'");
+if (isFakeHeadline) {
+box.classList.add('correct');
+box.style.border = '4px solid #28a745';
+} else {
+box.classList.add('incorrect');
+if (box.classList.contains('selected') && !isCorrect) {
+box.style.border = '4px solid #dc3545';
+}
+}
+box.onclick = null; // Disable clicking
+});
+
+// Show feedback
+const feedback = document.getElementById('feedbackSection');
+const title = document.getElementById('feedbackTitle');
+const text = document.getElementById('feedbackText');
+
+if (isCorrect) {
+title.textContent = '🎉 Well Done, Detective!';
+title.style.color = '#28a745';
+} else {
+title.textContent = '🤔 Not Quite Right!';
+title.style.color = '#dc3545';
+}
+
+text.textContent = currentQuestion.explanation;
+feedback.classList.add('show');
+
+// Update score and buttons
+updateScore();
+document.getElementById('checkAnswerBtn').style.display = 'none';
+
+// Check if this is the final question
+if (totalQuestions >= maxQuestions) {
+document.getElementById('nextQuestionBtn').textContent = '🏆 See Final Results!';
+}
+
+document.getElementById('nextQuestionBtn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+// Check if game is complete
+if (totalQuestions >= maxQuestions) {
+showFinalResults();
+return;
+}
+
+// Reset button states
+document.getElementById('checkAnswerBtn').style.display = 'inline-block';
+document.getElementById('checkAnswerBtn').disabled = true;
+document.getElementById('nextQuestionBtn').style.display = 'none';
+document.getElementById('nextQuestionBtn').textContent = '➡️ Next Challenge!';
+
+// Reset selection
+selectedHeadline = null;
+generateQuestion();
+}
+
+function showFinalResults() {
+const container = document.getElementById('headlineContainer');
+const percentage = Math.round((score / maxQuestions) * 100);
+
+let rank = '';
+let rankColor = '';
+let rankIcon = '';
+let message = '';
+
+if (percentage >= 88) {
+rank = 'Master Detective';
+rankColor = '#ffd700';
+rankIcon = '🏆';
+message = 'Outstanding! You have excellent fake news detection skills!';
+} else if (percentage >= 75) {
+rank = 'Senior Detective';
+rankColor = '#c0c0c0';
+rankIcon = '🥈';
+message = 'Great work! You spotted most of the fake headlines!';
+} else if (percentage >= 63) {
+rank = 'Detective Officer';
+rankColor = '#cd7f32';
+rankIcon = '🥉';
+message = 'Good job! You\\'re developing strong critical thinking skills!';
+} else if (percentage >= 50) {
+rank = 'Detective Cadet';
+rankColor = '#4CAF50';
+rankIcon = '🎯';
+message = 'Nice try! Keep practicing to improve your fake news detection!';
+} else {
+rank = 'Detective Trainee';
+rankColor = '#2196F3';
+rankIcon = '📚';
+message = 'Good effort! Practice makes perfect - try again to improve!';
+}
+
+container.innerHTML = `
+<div style="text-align: center; padding: 30px;">
+<div style="font-size: 4em; margin-bottom: 20px;">${rankIcon}</div>
+<h2 style="color: ${rankColor}; font-size: 2.2em; margin-bottom: 15px;">
+Final Rank: ${rank}
+</h2>
+<div style="font-size: 1.5em; color: #333; margin-bottom: 20px;">
+<strong>Score: ${score} out of ${maxQuestions} (${percentage}%)</strong>
+</div>
+<div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid ${rankColor};">
+<p style="font-size: 1.2em; color: #333; margin: 0;">${message}</p>
+</div>
+<div style="margin-top: 25px;">
+<button class="btn btn-primary" onclick="location.reload()" style="margin: 10px;">
+🔄 Play Again
+</button>
+</div>
+</div>
+`;
+
+// Hide buttons and feedback
+document.getElementById('checkAnswerBtn').style.display = 'none';
+document.getElementById('nextQuestionBtn').style.display = 'none';
+document.getElementById('feedbackSection').classList.remove('show');
+
+// Update score display for final time
+updateFinalScore(rank);
+}
+
+function shareCertificate() {
+const percentage = Math.round((score / maxQuestions) * 100);
+let rank = '';
+
+if (percentage >= 88) rank = 'Master Detective';
+else if (percentage >= 75) rank = 'Senior Detective';
+else if (percentage >= 63) rank = 'Detective Officer';
+else if (percentage >= 50) rank = 'Detective Cadet';
+else rank = 'Detective Trainee';
+
+const shareText = `🕵️ I just completed the Fake News Detective Academy at Archbishop Ilsley School!
+
 Final Rank: ${rank}
 Score: ${score}/${maxQuestions} (${percentage}%)
 
 I learned how to spot fake headlines and think critically about media! 🧠✨`;
-            
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Fake News Detective Results',
-                    text: shareText
-                });
-            } else {
-                navigator.clipboard.writeText(shareText).then(() => {
-                    alert('Results copied to clipboard! You can paste and share them anywhere!');
-                }).catch(() => {
-                    alert(shareText);
-                });
-            }
-        }
 
-        function updateScore() {
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            let rank = 'Trainee';
-            
-            if (totalQuestions > 0) {
-                const percentage = (score / totalQuestions) * 100;
-                if (percentage >= 80) rank = 'Master Detective 🌟';
-                else if (percentage >= 60) rank = 'Detective Officer 👮';
-                else if (percentage >= 40) rank = 'Detective Cadet 🎯';
-            }
-            
-            scoreDisplay.textContent = `🏆 Progress: ${score}/${totalQuestions} | Round ${totalQuestions + 1} of ${maxQuestions} | Current: ${rank}`;
-        }
+if (navigator.share) {
+navigator.share({
+title: 'Fake News Detective Results',
+text: shareText
+});
+} else {
+navigator.clipboard.writeText(shareText).then(() => {
+alert('Results copied to clipboard! You can paste and share them anywhere!');
+}).catch(() => {
+alert(shareText);
+});
+}
+}
 
-        function updateFinalScore(finalRank) {
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            scoreDisplay.textContent = `🏆 Final Score: ${score}/${maxQuestions} | 🎯 Detective Rank: ${finalRank}`;
-        }
+function updateScore() {
+const scoreDisplay = document.getElementById('scoreDisplay');
+let rank = 'Trainee';
 
-        // Initialize the game
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('Fake News Detective Academy loaded!');
-        });
-    </script>
+if (totalQuestions > 0) {
+const percentage = (score / totalQuestions) * 100;
+if (percentage >= 80) rank = 'Master Detective 🌟';
+else if (percentage >= 60) rank = 'Detective Officer 👮';
+else if (percentage >= 40) rank = 'Detective Cadet 🎯';
+}
+
+scoreDisplay.textContent = `🏆 Progress: ${score}/${totalQuestions} | Round ${totalQuestions + 1} of ${maxQuestions} | Current: ${rank}`;
+}
+
+function updateFinalScore(finalRank) {
+const scoreDisplay = document.getElementById('scoreDisplay');
+scoreDisplay.textContent = `🏆 Final Score: ${score}/${maxQuestions} | 🎯 Detective Rank: ${finalRank}`;
+}
+
+// Initialize the game
+document.addEventListener('DOMContentLoaded', function() {
+console.log('Fake News Detective Academy loaded!');
+});
+</script>
 </body>
 </html>
