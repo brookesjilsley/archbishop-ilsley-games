@@ -362,6 +362,39 @@ transform: translateY(-2px);
 box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
+/* HOME BUTTON */
+.home-button {
+position: fixed;
+top: 20px;
+left: 20px;
+background: linear-gradient(135deg, #c41e3a, #2a5298);
+color: white;
+border: none;
+padding: 12px 18px;
+border-radius: 10px;
+font-size: 0.95em;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+z-index: 1000;
+box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+text-decoration: none;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+.home-button:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+background: linear-gradient(135deg, #d63447, #1e3a8a);
+}
+
+.home-button:active {
+transform: translateY(0);
+box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
 /* STORY DISPLAY */
 .story-choices-summary {
 font-size: 1em;
@@ -544,6 +577,13 @@ padding: 5px;
 border-radius: 10px;
 margin: 0;
 width: calc(100% - 10px);
+}
+
+.home-button {
+top: 15px;
+left: 15px;
+padding: 10px 14px;
+font-size: 0.85em;
 }
 
 .form-section, .story-section {
@@ -773,6 +813,8 @@ min-height: -webkit-fill-available;
 </style>
 </head>
 <body>
+<button class="home-button" onclick="goToHub()">🏠 Back to Hub</button>
+
 <div class="container">
 <div class="header">
 <h1>Short Story Studio</h1>
@@ -1637,6 +1679,10 @@ min-height: -webkit-fill-available;
             console.error('❌ Fatal error in generateStory:', error);
             alert('Something went wrong. Check the console for details.');
         }
+    }
+
+    function goToHub() {
+        window.location.href = 'https://brookesjilsley.github.io/archbishop-ilsley-games/';
     }
 
 })();
