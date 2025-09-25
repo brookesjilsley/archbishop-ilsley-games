@@ -813,7 +813,7 @@ min-height: -webkit-fill-available;
 </style>
 </head>
 <body>
-<button class="home-button" onclick="goToHub()">🏠 Back to Hub</button>
+<button class="home-button" id="homeBtn">🏠 Back to Hub</button>
 
 <div class="container">
 <div class="header">
@@ -1046,6 +1046,7 @@ min-height: -webkit-fill-available;
         const surpriseBtn = document.getElementById('surpriseBtn');
         const startAgainBtn = document.getElementById('startAgainBtn');
         const toggleBuilderBtn = document.getElementById('toggleBuilderBtn');
+        const homeBtn = document.getElementById('homeBtn');
         
         // Add event listeners using proper DOM methods
         if (generateBtn) {
@@ -1061,6 +1062,14 @@ min-height: -webkit-fill-available;
         if (surpriseBtn) {
             surpriseBtn.addEventListener('click', surpriseMe);
             console.log('✅ Surprise Me button event listener added');
+        }
+
+        if (homeBtn) {
+            homeBtn.addEventListener('click', function() {
+                console.log('🏠 Home button clicked - navigating to hub');
+                window.location.href = 'https://brookesjilsley.github.io/archbishop-ilsley-games/';
+            });
+            console.log('✅ Home button event listener added');
         }
 
         if (startAgainBtn) {
