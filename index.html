@@ -33,9 +33,11 @@
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: 2rem;
             color: #2a5298;
             margin-bottom: 5px;
+            font-weight: bold;
+            animation: pulse 2s infinite;
         }
 
         .tagline {
@@ -70,6 +72,14 @@
         .game-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .info-card {
+            cursor: default;
+        }
+
+        .info-card:hover {
+            transform: translateY(-2px);
         }
 
         .status-badge {
@@ -212,7 +222,7 @@
 <body>
     <div class="header">
         <div class="school-logo">ARCHBISHOP ILSLEY</div>
-        <div class="subtitle">Catholic School - Interactive Learning Hub</div>
+        <div class="subtitle">Interactive Learning Hub</div>
         <div class="tagline">Building critical thinkers for a modern world</div>
         <div style="margin-top: 15px; color: #666; font-style: italic;">
             Welcome to Archbishop Ilsley's English and Media Department! Explore our interactive learning games and chat with our teachers about what makes our students successful.
@@ -294,6 +304,21 @@
                     <li>Modern relevance discussions</li>
                 </ul>
                 <button class="demo-button">Investigate Now</button>
+            </div>
+
+            <!-- Open Evening Information -->
+            <div class="game-card info-card">
+                <div class="status-badge" style="background: #28a745; color: white;">INFO</div>
+                <div class="game-icon">📅</div>
+                <h3 class="game-title">Open Evening Information</h3>
+                <p class="game-description">Important dates and times for prospective families.</p>
+                <ul class="game-features" style="color: #333; font-weight: 500;">
+                    <li style="margin: 10px 0;"><strong>Headteacher's Talks:</strong><br>In the hall at 17:30 and 18:30</li>
+                    <li style="margin: 10px 0;"><strong>Open Mornings:</strong><br>Wed 1st October (9:30 – 11:00)<br>Thurs 2nd October (9:30 – 11:00)</li>
+                </ul>
+                <div style="background: linear-gradient(45deg, #c41e3a, #2a5298); color: white; padding: 12px 24px; border-radius: 25px; font-weight: bold; text-align: center; margin-top: 15px;">
+                    We look forward to meeting you!
+                </div>
             </div>
         </div>
     </div>
