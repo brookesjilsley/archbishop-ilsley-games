@@ -468,6 +468,90 @@ border: 3px solid #c41e3a;
 
 }
 
+.headteacher-announcement .popup-content {
+
+background: linear-gradient(135deg, #fff3cd 0%, #ffffff 100%);
+
+border: 4px solid #c41e3a;
+
+box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+
+max-width: 700px;
+
+animation: urgentPulse 2s ease-in-out infinite;
+
+}
+
+@keyframes urgentPulse {
+
+0%, 100% { 
+
+transform: scale(1);
+
+box-shadow: 0 15px 40px rgba(196, 30, 58, 0.3);
+
+}
+
+50% { 
+
+transform: scale(1.02);
+
+box-shadow: 0 20px 50px rgba(196, 30, 58, 0.5);
+
+}
+
+}
+
+.announcement-title {
+
+color: #c41e3a;
+
+font-size: 2.2rem;
+
+font-weight: bold;
+
+margin-bottom: 20px;
+
+text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+
+animation: pulse 2s infinite;
+
+}
+
+.announcement-text {
+
+color: #333;
+
+font-size: 1.3rem;
+
+line-height: 1.6;
+
+margin-bottom: 20px;
+
+font-weight: 500;
+
+}
+
+.countdown-display {
+
+background: linear-gradient(45deg, #2a5298, #1a4a8a);
+
+color: white;
+
+padding: 15px 25px;
+
+border-radius: 25px;
+
+font-size: 1.2rem;
+
+font-weight: bold;
+
+margin: 20px 0;
+
+animation: pulse 2s infinite;
+
+}
+
 .welcome-title {
 
 color: #c41e3a;
@@ -930,6 +1014,24 @@ We look forward to meeting you!
 
 </div>
 
+<!-- Headteacher Announcement Popup -->
+
+<div id="headteacherPopup" class="popup-overlay headteacher-announcement">
+
+<div class="popup-content">
+
+<h2 class="announcement-title">📢 Important Announcement</h2>
+
+<p class="announcement-text">Mr Clinton, our Headteacher, is giving his address to prospective parents and students in 5 minutes. Please make your way to the main hall.</p>
+
+<div class="countdown-display" id="countdownTimer">⏰ Talk begins in 5 minutes</div>
+
+<button class="close-popup" onclick="closeHeadteacherPopup()">Got It!</button>
+
+</div>
+
+</div>
+
 <!-- Game Demo Popup -->
 
 <div id="popupOverlay" class="popup-overlay">
@@ -1020,7 +1122,7 @@ const contentItems = [
 
 { type: 'question', text: 'Have you asked the 6th Form team about their Global Links opportunity?' },
 
-{ type: 'fact', text: 'Our Swimming Pool and Astro Turf are great facilities!' },
+{ type: 'fact', text: 'Our Swimming Pool and Astro Turf are great PE facilities!' },
 
 { type: 'question', text: 'Have you asked about our clubs like Debate and Maths club?' },
 
@@ -1028,7 +1130,7 @@ const contentItems = [
 
 { type: 'question', text: 'Have you asked about what we offer in our glorious canteen?' },
 
-{ type: 'fact', text: 'The name "Acocks Green" comes from the Acock family, who had a house in the area by the early 15th century' },
+{ type: 'fact', text: 'The name "Acocks Green" comes from the Acock family, who had a house in the area by the early 15th century.' },
 
 { type: 'question', text: 'Have you visited our school Chapel?' },
 
@@ -1040,9 +1142,9 @@ const contentItems = [
 
 { type: 'question', text: 'Have you asked the Science Department about their annual trip to the Big Bang show?' },
 
-{ type: 'question', text: 'What are you currently reading? Tell an English teacher' },
+{ type: 'question', text: 'Have you asked what books our teachers are reading?' },
 
-{ type: 'question', text: 'Have you visited our Library?' }
+{ type: 'question', text: 'Have you asked about what books are in our Library?' }
 
 ];
 
@@ -1090,7 +1192,7 @@ updateContent();
 
 // Start rotation
 
-setInterval(updateContent, 4000); // Change every 4 seconds
+setInterval(updateContent, 4500); // Change every 4.5 seconds
 
 function openDemo(gameType) {
 
