@@ -308,9 +308,46 @@
         .restart-button:hover {
             background: #a01729;
         }
+
+        .home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #c41e3a 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+            background: linear-gradient(135deg, #a01729 0%, #1e3c72 100%);
+        }
+
+        .home-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
     </style>
 </head>
 <body>
+    <!-- Home Button -->
+    <button class="home-button" onclick="window.location.href = 'https://brookesjilsley.github.io/archbishop-ilsley-games/'">
+        🏠 Back to Hub
+    </button>
+
     <div class="container">
         <div class="header">
             <h1>🕵️ Animal Farm Propaganda Detective</h1>
