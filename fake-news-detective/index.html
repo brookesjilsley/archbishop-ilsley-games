@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(135deg, #2a5298 0%, #c41e3a 100%);
             min-height: 100vh;
             color: #333;
         }
@@ -31,18 +31,18 @@
             border-radius: 20px;
             margin-bottom: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            border: 4px solid #dc143c;
+            border: 4px solid #c41e3a;
         }
 
         .header h1 {
-            color: #dc143c;
+            color: #c41e3a;
             font-size: 2.5em;
             margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .header .school-name {
-            color: #1e3c72;
+            color: #2a5298;
             font-size: 1.2em;
             font-weight: bold;
             margin-bottom: 15px;
@@ -328,6 +328,10 @@
 </head>
 <body>
     <div class="container">
+        <button class="home-button" onclick="window.location.href = 'https://brookesjilsley.github.io/archbishop-ilsley-games/'">
+            🏠 Back to Hub
+        </button>
+        
         <div class="header">
             <h1>🕵️ Fake News Detective Academy 🔍</h1>
             <div class="school-name">Archbishop Ilsley Catholic School</div>
@@ -388,8 +392,10 @@
         let currentDifficulty = '';
         let score = 0;
         let totalQuestions = 0;
+        let maxQuestions = 8; // Fixed 8 rounds
         let selectedHeadline = null;
         let currentQuestion = null;
+        let usedQuestions = []; // Track used questions to avoid repeats
 
         // Your Google Apps Script Web App URL (you'll need to update this)
         const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
@@ -409,6 +415,7 @@
             // Reset game
             score = 0;
             totalQuestions = 0;
+            usedQuestions = [];
             updateScore();
             
             // Generate first question
@@ -416,6 +423,12 @@
         }
 
         async function generateQuestion() {
+            // Check if game is complete
+            if (totalQuestions >= maxQuestions) {
+                showFinalResults();
+                return;
+            }
+
             const container = document.getElementById('headlineContainer');
             const checkBtn = document.getElementById('checkAnswerBtn');
             const nextBtn = document.getElementById('nextQuestionBtn');
@@ -429,13 +442,25 @@
             selectedHeadline = null;
 
             try {
-                // This is where you'll connect to your Google Apps Script
-                // For now, we'll simulate with sample data
-                const sampleQuestions = getSampleQuestions(currentDifficulty);
-                const question = sampleQuestions[Math.floor(Math.random() * sampleQuestions.length)];
+                // Get available questions (not used yet)
+                const allQuestions = getSampleQuestions(currentDifficulty);
+                const availableQuestions = allQuestions.filter((_, index) => !usedQuestions.includes(index));
                 
-                currentQuestion = question;
-                displayQuestion(question);
+                // If we've used all questions, reset the pool
+                if (availableQuestions.length === 0) {
+                    usedQuestions = [];
+                    availableQuestions = allQuestions;
+                }
+                
+                // Pick a random question from available ones
+                const questionIndex = Math.floor(Math.random() * availableQuestions.length);
+                currentQuestion = availableQuestions[questionIndex];
+                
+                // Mark this question as used
+                const originalIndex = allQuestions.indexOf(currentQuestion);
+                usedQuestions.push(originalIndex);
+                
+                displayQuestion(currentQuestion);
                 
             } catch (error) {
                 console.error('Error generating question:', error);
@@ -684,19 +709,127 @@
             // Update score and buttons
             updateScore();
             document.getElementById('checkAnswerBtn').style.display = 'none';
+            
+            // Check if this is the final question
+            if (totalQuestions >= maxQuestions) {
+                document.getElementById('nextQuestionBtn').textContent = '🏆 See Final Results!';
+            }
             document.getElementById('nextQuestionBtn').style.display = 'inline-block';
         }
 
         function nextQuestion() {
+            // Check if game is complete
+            if (totalQuestions >= maxQuestions) {
+                showFinalResults();
+                return;
+            }
+
             // Reset button states
             document.getElementById('checkAnswerBtn').style.display = 'inline-block';
             document.getElementById('checkAnswerBtn').disabled = true;
             document.getElementById('nextQuestionBtn').style.display = 'none';
+            document.getElementById('nextQuestionBtn').textContent = '➡️ Next Challenge!';
             
             // Reset selection
             selectedHeadline = null;
             
             generateQuestion();
+        }
+
+        function showFinalResults() {
+            const container = document.getElementById('headlineContainer');
+            const percentage = Math.round((score / maxQuestions) * 100);
+            
+            let rank = '';
+            let rankColor = '';
+            let rankIcon = '';
+            let message = '';
+            
+            if (percentage >= 88) {
+                rank = 'Master Detective';
+                rankColor = '#ffd700';
+                rankIcon = '🏆';
+                message = 'Outstanding! You have excellent fake news detection skills!';
+            } else if (percentage >= 75) {
+                rank = 'Senior Detective';
+                rankColor = '#c0c0c0';
+                rankIcon = '🥈';
+                message = 'Great work! You spotted most of the fake headlines!';
+            } else if (percentage >= 63) {
+                rank = 'Detective Officer';
+                rankColor = '#cd7f32';
+                rankIcon = '🥉';
+                message = 'Good job! You\'re developing strong critical thinking skills!';
+            } else if (percentage >= 50) {
+                rank = 'Detective Cadet';
+                rankColor = '#4CAF50';
+                rankIcon = '🎯';
+                message = 'Nice try! Keep practicing to improve your fake news detection!';
+            } else {
+                rank = 'Detective Trainee';
+                rankColor = '#2196F3';
+                rankIcon = '📚';
+                message = 'Good effort! Practice makes perfect - try again to improve!';
+            }
+            
+            container.innerHTML = `
+                <div style="text-align: center; padding: 30px;">
+                    <div style="font-size: 4em; margin-bottom: 20px;">${rankIcon}</div>
+                    <h2 style="color: ${rankColor}; font-size: 2.2em; margin-bottom: 15px;">
+                        Final Rank: ${rank}
+                    </h2>
+                    <div style="font-size: 1.5em; color: #333; margin-bottom: 20px;">
+                        <strong>Score: ${score} out of ${maxQuestions} (${percentage}%)</strong>
+                    </div>
+                    <div style="background: #f8f9fa; border-radius: 15px; padding: 20px; margin: 20px 0; border-left: 5px solid ${rankColor};">
+                        <p style="font-size: 1.2em; color: #333; margin: 0;">${message}</p>
+                    </div>
+                    <div style="margin-top: 25px;">
+                        <button class="btn btn-primary" onclick="location.reload()" style="margin: 10px;">
+                            🔄 Play Again
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Hide buttons and feedback
+            document.getElementById('checkAnswerBtn').style.display = 'none';
+            document.getElementById('nextQuestionBtn').style.display = 'none';
+            document.getElementById('feedbackSection').classList.remove('show');
+            
+            // Update score display for final time
+            updateFinalScore(rank);
+        }
+
+        function shareCertificate() {
+            const percentage = Math.round((score / maxQuestions) * 100);
+            let rank = '';
+            
+            if (percentage >= 88) rank = 'Master Detective';
+            else if (percentage >= 75) rank = 'Senior Detective';
+            else if (percentage >= 63) rank = 'Detective Officer';
+            else if (percentage >= 50) rank = 'Detective Cadet';
+            else rank = 'Detective Trainee';
+            
+            const shareText = `🕵️ I just completed the Fake News Detective Academy at Archbishop Ilsley School! 
+            
+Final Rank: ${rank}
+Score: ${score}/${maxQuestions} (${percentage}%)
+
+I learned how to spot fake headlines and think critically about media! 🧠✨`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Fake News Detective Results',
+                    text: shareText
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    alert('Results copied to clipboard! You can paste and share them anywhere!');
+                }).catch(() => {
+                    alert(shareText);
+                });
+            }
         }
 
         function updateScore() {
@@ -710,7 +843,12 @@
                 else if (percentage >= 40) rank = 'Detective Cadet 🎯';
             }
             
-            scoreDisplay.textContent = `🏆 Score: ${score}/${totalQuestions} | 🎯 Detective Rank: ${rank}`;
+            scoreDisplay.textContent = `🏆 Progress: ${score}/${totalQuestions} | Round ${totalQuestions + 1} of ${maxQuestions} | Current: ${rank}`;
+        }
+
+        function updateFinalScore(finalRank) {
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            scoreDisplay.textContent = `🏆 Final Score: ${score}/${maxQuestions} | 🎯 Detective Rank: ${finalRank}`;
         }
 
         // Initialize the game
