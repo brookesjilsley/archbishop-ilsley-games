@@ -1065,6 +1065,8 @@ animalfarm: './animal-farm/'
 };
 
 // Headteacher announcement system
+let announcementShown = { '1510': false, '1725': false, '1825': false }; // Track if already shown today
+
 function checkForHeadteacherAnnouncement() {
 
 const now = new Date();
@@ -1073,15 +1075,26 @@ const hours = now.getHours();
 
 const minutes = now.getMinutes();
 
+const timeKey = hours.toString().padStart(2, '0') + minutes.toString().padStart(2, '0');
+
 // Debug logging
 console.log(`Current time: ${hours}:${minutes.toString().padStart(2, '0')}`);
 
-// Check if it's 17:25 or 18:25 (5:25 PM or 6:25 PM)
-if ((hours === 17 && minutes === 25) || (hours === 18 && minutes === 25)) {
+// Check if it's 15:10, 17:25 or 18:25
+if ((timeKey === '1510' || timeKey === '1725' || timeKey === '1825') && !announcementShown[timeKey]) {
 
-console.log('Triggering headteacher announcement!');
+console.log('Triggering headteacher announcement for time:', timeKey);
+
+announcementShown[timeKey] = true; // Mark as shown
 
 showHeadteacherAnnouncement();
+
+// Reset the flag after 2 minutes (in case page stays open)
+setTimeout(() => {
+
+announcementShown[timeKey] = false;
+
+}, 120000);
 
 }
 
@@ -1134,8 +1147,8 @@ showHeadteacherAnnouncement();
 
 }
 
-// Check for announcements every minute
-setInterval(checkForHeadteacherAnnouncement, 60000);
+// Check for announcements every 15 seconds (more frequent checking)
+setInterval(checkForHeadteacherAnnouncement, 15000);
 
 // Also check immediately when page loads
 checkForHeadteacherAnnouncement();
