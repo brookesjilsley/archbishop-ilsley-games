@@ -1064,6 +1064,82 @@ animalfarm: './animal-farm/'
 
 };
 
+// Headteacher announcement system
+function checkForHeadteacherAnnouncement() {
+
+const now = new Date();
+
+const hours = now.getHours();
+
+const minutes = now.getMinutes();
+
+// Debug logging
+console.log(`Current time: ${hours}:${minutes.toString().padStart(2, '0')}`);
+
+// Check if it's 17:25 or 18:25 (5:25 PM or 6:25 PM)
+if ((hours === 17 && minutes === 25) || (hours === 18 && minutes === 25)) {
+
+console.log('Triggering headteacher announcement!');
+
+showHeadteacherAnnouncement();
+
+}
+
+}
+
+function showHeadteacherAnnouncement() {
+
+console.log('Showing headteacher popup');
+
+const popup = document.getElementById('headteacherPopup');
+
+if (popup) {
+
+popup.classList.add('show');
+
+// Auto-close after 45 seconds
+
+setTimeout(() => {
+
+closeHeadteacherPopup();
+
+}, 45000);
+
+} else {
+
+console.error('Headteacher popup element not found');
+
+}
+
+}
+
+function closeHeadteacherPopup() {
+
+console.log('Closing headteacher popup');
+
+const popup = document.getElementById('headteacherPopup');
+
+if (popup) {
+
+popup.classList.remove('show');
+
+}
+
+}
+
+// Test function - you can call this in browser console to test the popup
+function testHeadteacherPopup() {
+
+showHeadteacherAnnouncement();
+
+}
+
+// Check for announcements every minute
+setInterval(checkForHeadteacherAnnouncement, 60000);
+
+// Also check immediately when page loads
+checkForHeadteacherAnnouncement();
+
 // Welcome popup functionality
 function showWelcomePopup() {
 
@@ -1110,41 +1186,41 @@ setInterval(updateClock, 1000);
 
 const contentItems = [
 
-{ type: 'fact', text: 'We run the biggest Duke of Edinburgh Award program in Birmingham!' },
+{ type: 'fact', text: 'We run the biggest Duke of Edinburgh Award program in Birmingham' },
 
 { type: 'question', text: 'Have you asked the History Department about their trips to Belgium and Berlin?' },
 
-{ type: 'fact', text: 'Archbishop Edward Ilsley built the first church in the village of Acocks Green.' },
+{ type: 'fact', text: 'Archbishop Edward Ilsley built the first church in the village of Acocks Green' },
 
 { type: 'question', text: 'Have you asked the MFL Department about their trip to Normandy?' },
 
-{ type: 'fact', text: 'The foundation stone for the Church was taken from the battlefields of Ypres in Belgium.' },
+{ type: 'fact', text: 'The foundation stone for the Church was taken from the battlefields of Ypres in Belgium' },
 
 { type: 'question', text: 'Have you asked the 6th Form team about their Global Links opportunity?' },
 
-{ type: 'fact', text: 'Our Swimming Pool and Astro Turf are great PE facilities!' },
+{ type: 'fact', text: 'Our swimming pool and Astro Turf are great facilities' },
 
 { type: 'question', text: 'Have you asked about our clubs like Debate and Maths club?' },
 
-{ type: 'fact', text: 'At our last inspection by OFSTED, we were graded Good!' },
+{ type: 'fact', text: 'At our last inspection by OFSTED, we were graded Good' },
 
 { type: 'question', text: 'Have you asked about what we offer in our glorious canteen?' },
 
-{ type: 'fact', text: 'The name "Acocks Green" comes from the Acock family, who had a house in the area by the early 15th century.' },
+{ type: 'fact', text: 'The name "Acocks Green" comes from the Acock family, who had a house in the area by the early 15th century' },
 
 { type: 'question', text: 'Have you visited our school Chapel?' },
 
-{ type: 'fact', text: 'The 11 bus service, which our students use, is nearly 27 miles long, has 266 bus stops and serves 50,000 per day on average' },
+{ type: 'fact', text: 'The Number 11 bus service, which many of our students use, is nearly 27 miles long, has 266 bus stops and serves 50,000 per day on average' },
 
 { type: 'question', text: 'Have you asked the Geography Department about their trip to Dorset?' },
 
-{ type: 'fact', text: 'We have recently been on ITV News talking about our hard work keeping children safe!' },
+{ type: 'fact', text: 'We have recently been on television talking about our hard work keeping children safe' },
 
 { type: 'question', text: 'Have you asked the Science Department about their annual trip to the Big Bang show?' },
 
-{ type: 'question', text: 'Have you asked what books our teachers are reading?' },
+{ type: 'question', text: 'What are you currently reading? Tell an English teacher' },
 
-{ type: 'question', text: 'Have you asked about what books are in our Library?' }
+{ type: 'question', text: 'Have you visited our Library?' }
 
 ];
 
